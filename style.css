@@ -134,3 +134,8 @@ body {
   margin: 0;
 }
 
+/* Smooth Scrolling */
+
+html {
+  scroll-behavior: smooth;
+}
