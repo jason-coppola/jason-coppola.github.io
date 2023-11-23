@@ -1,0 +1,64 @@
+/* Styles */
+
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Hero section */
+
+.hero {
+  background-image: url("hero-image.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+}
+
+.hero-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.hero-text {
+  color: white;
+  text-align: center;
+}
+
+.hero-image {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  margin-top: 20px;
+}
+
+/* About section */
+
+.about {
+  padding: 50px;
+}
+
+.about-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Achievements section */
+
+.achievements {
+  padding: 50px;
+  background-color: #f2f2f2;
+}
+
+.achievements-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.achievements-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
