@@ -134,8 +134,45 @@ body {
   margin: 0;
 }
 
-/* Smooth Scrolling */
+.kpi-list {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+/* Smooth Scrolling Section*/
 
 html {
   scroll-behavior: smooth;
 }
+
+/* Link Preview Section*/
+
+.box {
+  width: 500px;
+  padding:20px;
+  background: #fff;
+  border-radius: 20px;
+}
+
+.box .title {
+  text-align: center;
+  font-size: 19px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.box #content {
+  line-height: 22px;
+}
+        
+.box #content a {
+  color:#06c;
+  text-decoration: underline;
+}
+
+.box .note {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
