@@ -175,3 +175,12 @@ html {
   text-align: center;
 }
 
+/* Image Format Section*/
+
+.logo {
+  padding:20px;
+  max-width: 300px;
+  max-height: 100px;
+}
+
+
