@@ -130,8 +130,9 @@ body {
 
 .achievements-list {
   list-style: none;
-  padding: 0;
+  padding: 20px;
   margin: 0;
+  border-bottom: 1px solid grey;
 }
 
 .kpi-list {
@@ -182,4 +183,33 @@ html {
   width: 50%;
 }
 
+/* Education section */
 
+.education {
+  padding: 50px;
+}
+
+.education-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.education-list {
+  list-style: none;
+  padding: 20px;
+  margin: 0;
+  border-bottom: 1px solid grey;
+}
+
+  /* Contact section */
+
+.contact {
+  padding: 50px;
+  background-color: #f2f2f2;
+
+}
+
+.contact-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
