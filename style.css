@@ -80,6 +80,27 @@ body {
   margin-bottom: 0;
 }
 
+.hero__cnt_links {
+  position: relative;
+  place-items: center;
+  z-index: 10;
+  color: #FFF;
+  font-size: 1.5vw;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fade-in 0.75s 1.5s linear forwards;
+}
+
+.hero__cnt_links svg {
+  height: 12vw;
+}
+.hero__cnt_links svg path {
+  fill: #FFF;
+}
+.hero__cnt_links h1 {
+  margin-bottom: 0;
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -212,4 +233,16 @@ html {
 .contact-container {
   max-width: 700px;
   margin: 0 auto;
+}
+
+/* Snap Scrolling section */
+
+.scroller {
+  height: 200px;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+}
+
+.scroller section {
+  scroll-snap-align: start;
 }
