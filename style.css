@@ -193,6 +193,12 @@ body {
   margin: 0 auto;
 }
 
+.contact-logo{
+  max-width: 50px;
+  max-height: 50px;
+  padding: 10px;
+}
+
 /* Smooth Scrolling Section*/
 
 html {
