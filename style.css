@@ -1,9 +1,15 @@
 /* Styles */
 
 body {
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif; /* Use a modern font */
   margin: 0;
   padding: 0;
+}
+
+/* Smooth Scrolling Section*/
+
+html {
+  scroll-behavior: smooth;
 }
 
 /* Hero section */
@@ -199,10 +205,10 @@ body {
   padding: 10px;
 }
 
-/* Smooth Scrolling Section*/
-
-html {
-  scroll-behavior: smooth;
+.contact-logo-calendly{
+  max-width: 100px;
+  max-height: 100px;
+  padding: 10px;
 }
 
 /* Link Preview Section*/
