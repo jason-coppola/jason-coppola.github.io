@@ -12,42 +12,42 @@
   <meta property="og:type" content="website">
 
   <!-- <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Noto+Sans:wght@900&amp;display=swap'> -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 
 </head>
 <body>
 
-<div class="hero">
+<div class="hero fade-in">
   <div class="hero__bg">
-    <picture>
-      <img src="./images/hero-image.jpg" alt="lake side moutains">
+    <picture class="hero__image">
+      <img src="./images/hero-image.jpg" alt="lake side mountains">
     </picture>
   </div>
 
   <div class="hero__cnt">
     <h1>Jason Coppola</h1>
-    <h2>Helping Companies Succeed in the Digital Age</h2>
-        <p class="hero__cnt_links">
-          <a href="#about-section" style="text-decoration: none; color: inherit;">
-              About Me | 
-            <!-- <img src="down-arrow.png" alt="down arrow" width="50px" height="50px"> -->
-          </a>
-          <a href="#achievements-section" style="text-decoration: none; color: inherit;">
-          Career Achievements | 
-          </a>
-          <a href="#education-section" style="text-decoration: none; color: inherit;">
-          Education |
-          </a>
-          <a href="#contact-section" style="text-decoration: none; color: inherit;">
-          Contact Me
-          </a>
-        </p>
+    <h2>Product Management Expert, Digital Media Specialist, Transformational Leader</h2>
+    <p class="hero__cnt_links">
+      <a href="#about-section" style="text-decoration: none; color: inherit;">
+        About Me | 
+      </a>
+      <a href="#achievements-section" style="text-decoration: none; color: inherit;">
+        Career Achievements | 
+      </a>
+      <a href="#education-section" style="text-decoration: none; color: inherit;">
+        Education |
+      </a>
+      <a href="#contact-section" style="text-decoration: none; color: inherit;">
+        Contact Me
+      </a>
+    </p>
   </div>
 </div>
 
-  <section class="about">
-    <div class="about-container" id="about-section">
+  <section class="about" id="about-section" data-aos="fade-up">
+    <div class="section-title" data-aos="fade-up">
       <h2>About Me</h2>
       <p>With over 12 years of experience in the streaming media industry, I am a strategic leader and digital native who specializes in product launches, account management, and technical operations. I have successfully developed and implemented multiple new consumer products, such as Disney+ Basic, Paramount+, HBO NOW, and HBO Max contributing to strategic growth targets and increased revenue streams for leading media companies.</p>
       <p>As the Director of Technical Account Management at Disney Streaming, I oversaw a team that manages various global accounts, ensuring successful product and feature launches, improved efficiencies and operations, and strong partner relationships. I am also a transformational leader who inspires creativity and dedication in my team, and a critical thinker who can synthesize data from different sources into meaningful and actionable models. I am passionate about delivering innovative and engaging streaming experiences to millions of customers around the world.</p>
@@ -55,170 +55,179 @@
   </section>
 
   <!-- Disney -->
-  <section class="achievements">
-    <div class="achievements-container" id="achievements-section">
-      <h2>Career Achievements</h2>
+  <section class="achievements" id="achievements-section">
+    <div class="section-title" data-aos="fade-up">
+        <h2>Career Achievements</h2>
+    </div>
+    <div class="achievements-container" data-aos="fade-up">
       <img src="./images/DisneyLogo.png" class="logo" alt="Disney Logo">
       <ul class="achievements-list">
-        <li>Successfully built and managed a team of 6 resources to manage various global accounts, resulting in improved efficiencies and operations of the technical account management team.</li>
+        <li data-aos="fade-right">
+          Successfully built and managed a team of 6 resources to manage various global accounts, resulting in improved efficiencies and operations of the technical account management team.
+        </li>
         <details class="kpi-list">
           <summary>Key Results</summary>
-            <p>
-              <ul>
-                <li>Increased revenue and market share for Disney's DTC streaming services by negotiating over a dozen new distribution agreements with key partners and driving business terms to align with The Walt Disney Company's commercial objectives.</li>
-                <li>Improved product offerings and increased customer satisfaction by developing strong relationships with global distribution partners and identifying new capabilities, features, and requirements to provide implementation recommendations to internal business, product, and technology teams.</li>
-                <li>Increased revenue and market share for Disney's DTC streaming services by successfully driving key 2022 revenue initiatives with IAP partners, including planning and execution of Disney+ day intro offer, new territory market launches, price increases, and product features.</li>
-                <li>Improved product offerings and increased customer satisfaction by leading integrations and technical due diligence on new platforms and influencing partners' future roadmaps.</li>
-                <li>Improved customer experience and increased subscriber retention by collaborating with internal product and technology stakeholders to identify challenges and blocking issues that required resolution with third-party partners.</li>
-              </ul>
-            </p>
+          <div class="kpi-content">
+            <ul>
+              <li>Increased revenue and market share for Disney's DTC streaming services by negotiating over a dozen new distribution agreements with key partners and driving business terms to align with The Walt Disney Company's commercial objectives.</li>
+              <li>Improved product offerings and increased customer satisfaction by developing strong relationships with global distribution partners and identifying new capabilities, features, and requirements to provide implementation recommendations to internal business, product, and technology teams.</li>
+              <li>Increased revenue and market share for Disney's DTC streaming services by successfully driving key 2022 revenue initiatives with IAP partners, including planning and execution of Disney+ day intro offer, new territory market launches, price increases, and product features.</li>
+              <li>Improved product offerings and increased customer satisfaction by leading integrations and technical due diligence on new platforms and influencing partners' future roadmaps.</li>
+              <li>Improved customer experience and increased subscriber retention by collaborating with internal product and technology stakeholders to identify challenges and blocking issues that required resolution with third-party partners.</li>
+            </ul>
+          </div>
         </details>
         <details class="kpi-list">
           <summary>Key Projects</summary>
-            <p>
-              <ul>
-                  <div class="box">
-                       <a href="https://techcrunch.com/2022/12/08/disney-launches-its-ad-supported-tier" target="_blank">
-                        <div class="title">Launch of Disney+ With Ads</div>
-                      </a>
-                      <div class="note"><img src="./images/DisneyPlusLogo.png" class="logo" alt="Disney+ Logo"></div>
-                      <div class="content">
-                          Launched Disney+ Basic (ads) across 4 major global partners (Amazon, Google, Sony, and Microsoft), resulting in increased revenue streams and new subscribers for the Disney+ platform.
-                      </div>
-                  </div>
-              </ul>
-            </p>
+          <div class="kpi-content">
+            <ul>
+                <div class="box">
+                     <a href="https://techcrunch.com/2022/12/08/disney-launches-its-ad-supported-tier" target="_blank">
+                      <div class="title">Launch of Disney+ With Ads</div>
+                    </a>
+                    <div class="note"><img src="./images/DisneyPlusLogo.png" class="logo" alt="Disney+ Logo"></div>
+                    <div class="content">
+                        Launched Disney+ Basic (ads) across 4 major global partners (Amazon, Google, Sony, and Microsoft), resulting in increased revenue streams and new subscribers for the Disney+ platform.
+                    </div>
+                </div>
+            </ul>
+          </div>
         </details>
       </ul>
     </div>
 
   <!-- Paramount -->
-    <div class="achievements-container">
+    <div class="achievements-container" data-aos="fade-up">
       <img src="./images/ParamountLogo.png" class="logo" alt="Paramount Logo">
       <ul class="achievements-list">
-        <li>Orchestrated the expansion of Paramount+ and Pluto TV into multiple new markets. Successfully managed a team overseeing operations and launch-related activities, contributing to strategic growth targets. Directed business priorities and operations while ensuring successful product and feature launches.</li>
+        <li data-aos="fade-right">
+          Orchestrated the expansion of Paramount+ and Pluto TV into multiple new markets. Successfully managed a team overseeing operations and launch-related activities, contributing to strategic growth targets. Directed business priorities and operations while ensuring successful product and feature launches.
+        </li>
         <details class="kpi-list">
           <summary>Key Results</summary>
-            <p>
-              <ul>
-                <li>Successfully expanded Paramount+ and Pluto TV into 40+ new markets, driving international growth for ViacomCBS' AVOD and SVOD products, resulting in record subscriber and MAU numbers for both services.</li>
-                <li>Led a team of regional PMOs responsible for managing the operations and launch related activities for new markets, resulting in timely and successful launches of Paramount+ in LatAm and the Nordics, and the expansion of Pluto TV into Brazil, Spain, and France markets.</li>
-                <li>Defined business priorities related to platform and feature expansion across AVOD and SVOD products, resulting in increased overall subscriber and MAUs, contributing directly to ViacomCBS' streaming goals.</li>
-                <li>Oversaw all business operations of Pluto TV and Paramount+ internationally, ensuring alignment with strategic objectives, resulting in streamlined operations and increased revenue for both services.</li>
-                <li>Successfully launched Paramount+ in LatAm and the Nordics on time and within scope, managing project timelines and budgets effectively, resulting in increased brand awareness and market share for ViacomCBS' streaming services.</li>
-                <li>Managed projects that contributed directly to ViacomCBS' streaming goals, including platform and feature expansion, resulting in increased overall subscriber and MAUs, and revenue growth.</li>
-              </ul>
-            </p>
+          <div class="kpi-content">
+            <ul>
+              <li>Successfully expanded Paramount+ and Pluto TV into 40+ new markets, driving international growth for ViacomCBS' AVOD and SVOD products, resulting in record subscriber and MAU numbers for both services.</li>
+              <li>Led a team of regional PMOs responsible for managing the operations and launch related activities for new markets, resulting in timely and successful launches of Paramount+ in LatAm and the Nordics, and the expansion of Pluto TV into Brazil, Spain, and France markets.</li>
+              <li>Defined business priorities related to platform and feature expansion across AVOD and SVOD products, resulting in increased overall subscriber and MAUs, contributing directly to ViacomCBS' streaming goals.</li>
+              <li>Oversaw all business operations of Pluto TV and Paramount+ internationally, ensuring alignment with strategic objectives, resulting in streamlined operations and increased revenue for both services.</li>
+              <li>Successfully launched Paramount+ in LatAm and the Nordics on time and within scope, managing project timelines and budgets effectively, resulting in increased brand awareness and market share for ViacomCBS' streaming services.</li>
+              <li>Managed projects that contributed directly to ViacomCBS' streaming goals, including platform and feature expansion, resulting in increased overall subscriber and MAUs, and revenue growth.</li>
+            </ul>
+          </div>
         </details>
         <details class="kpi-list">
           <summary>Key Projects</summary>
-            <p>
-              <ul>
-                  <div class="box">
-                       <a href="https://whipmedia.com/press_items/paramount-plus-lands-in-latin-america-deep-catalog-and-fresh-originals-to-face-netflix-and-disney-plus/" target="_blank">
-                        <div class="title">Paramount+ International Launch</div>
-                      </a>
-                      <div class="note"><img src="https://variety.com/wp-content/uploads/2020/09/paramount-.jpg?w=1000&h=563&crop=1" class="logo" alt="Paramount+ Logo"></div>
-                      <div class="content">
-                          Successfully coordinated the operational launch of Paramount+ into its first international markets.
-                      </div>
-                  </div>
-              </ul>
-            </p>
-            <p>
-              <ul>
-                  <div class="box">
-                       <a href="https://www.streamtvinsider.com/video/viacomcbs-plots-european-expansion-for-pluto-tv" target="_blank">
-                        <div class="title">Pluto International Expansion</div>
-                      </a>
-                      <div class="note"><img src="https://qtxasset.com/cdn-cgi/image/w=850,h=478,f=auto,fit=crop,g=0.5x0.5/https://qtxasset.com/quartz/qcloud4/media/image/fiercevideo/1602176135/plutotv.jpeg/plutotv.jpeg?VersionId=IWwmbnFtePJgQZsNFudpYGV36jOVV_H6" class="logo" alt="Pluto TV UI"></div>
-                      <div class="content">
-                          Successfully coordinated the international expansion of Pluto TV into international makerts such as EMEA and APAC.
-                      </div>
-                  </div>
-              </ul>
-            </p>
+          <div class="kpi-content">
+            <ul>
+                <div class="box">
+                     <a href="https://whipmedia.com/press_items/paramount-plus-lands-in-latin-america-deep-catalog-and-fresh-originals-to-face-netflix-and-disney-plus/" target="_blank">
+                      <div class="title">Paramount+ International Launch</div>
+                    </a>
+                    <div class="note"><img src="https://variety.com/wp-content/uploads/2020/09/paramount-.jpg?w=1000&h=563&crop=1" class="logo" alt="Paramount+ Logo"></div>
+                    <div class="content">
+                        Successfully coordinated the operational launch of Paramount+ into its first international markets.
+                    </div>
+                </div>
+            </ul>
+            <ul>
+                <div class="box">
+                     <a href="https://www.streamtvinsider.com/video/viacomcbs-plots-european-expansion-for-pluto-tv" target="_blank">
+                      <div class="title">Pluto International Expansion</div>
+                    </a>
+                    <div class="note"><img src="https://qtxasset.com/cdn-cgi/image/w=850,h=478,f=auto,fit=crop,g=0.5x0.5/https://qtxasset.com/quartz/qcloud4/media/image/fiercevideo/1602176135/plutotv.jpeg/plutotv.jpeg?VersionId=IWwmbnFtePJgQZsNFudpYGV36jOVV_H6" class="logo" alt="Pluto TV UI"></div>
+                    <div class="content">
+                        Successfully coordinated the international expansion of Pluto TV into international makerts such as EMEA and APAC.
+                    </div>
+                </div>
+            </ul>
+          </div>
         </details>
       </ul>
     </div>
 
   <!-- Ronin Group LLC -->
-  <div class="achievements-container">
+  <div class="achievements-container" data-aos="fade-up">
       <img src="./images/RoninGroupLogo.png" class="logo" alt="Ronin Group, LLC Logo">
       <ul class="achievements-list">
-        <li>Founded an entertainment media group centered on revitalizing independent theater. Developed the Neon Zebra brand and negotiated leasing contracts, demonstrating business acumen and commitment to arts and culture. Despite challenging circumstances, exhibited resilience and continued to support the arts.</li>
+        <li data-aos="fade-right">
+          Founded an entertainment media group centered on revitalizing independent theater. Developed the Neon Zebra brand and negotiated leasing contracts, demonstrating business acumen and commitment to arts and culture. Despite challenging circumstances, exhibited resilience and continued to support the arts.
+        </li>
         <details class="kpi-list">
           <summary>Key Results</summary>
-            <p>
-              <ul>
-                <li>Co-founded an entertainment media group with a focus on independent theater revitalization and support of the arts, demonstrating a commitment to cultural and community development.</li>
-                <li>Developed The Neon Zebra brand as an independent movie theater in Stamford, CT, showcasing a keen eye for branding and marketing strategy.</li>
-                <li>Successfully negotiated a favorable leasing contract to take over the old State Cinema, demonstrating strong negotiation skills and business acumen.</li>
-                <li>Worked closely with construction partners, designers, and local officials to create plans to relaunch the theater as an upscale dinner, drinks, and movie experience, demonstrating leadership and collaboration skills.</li>
-                <li>Despite having to abandon the project due to COVID-19, demonstrated resilience and the ability to pivot in challenging circumstances while continuing to support the arts and independent theater revitalization.</li>
-              </ul>
-            </p>
+          <div class="kpi-content">
+            <ul>
+              <li>Co-founded an entertainment media group with a focus on independent theater revitalization and support of the arts, demonstrating a commitment to cultural and community development.</li>
+              <li>Developed The Neon Zebra brand as an independent movie theater in Stamford, CT, showcasing a keen eye for branding and marketing strategy.</li>
+              <li>Successfully negotiated a favorable leasing contract to take over the old State Cinema, demonstrating strong negotiation skills and business acumen.</li>
+              <li>Worked closely with construction partners, designers, and local officials to create plans to relaunch the theater as an upscale dinner, drinks, and movie experience, demonstrating leadership and collaboration skills.</li>
+              <li>Despite having to abandon the project due to COVID-19, demonstrated resilience and the ability to pivot in challenging circumstances while continuing to support the arts and independent theater revitalization.</li>
+            </ul>
+          </div>
         </details>
         <details class="kpi-list">
           <summary>Key Projects</summary>
-            <p>
-              <ul>
-                  <div class="box">
-                       <a href="https://drive.google.com/file/d/1WFspgIfEcUX0tx1pV8fzGYjS4RW94I25/view?usp=drive_link" target="_blank">
-                        <div class="title">Development of The Neon Zebra Brand</div>
-                      </a>
-                      <div class="note"><img src="./images/NeonZebra.png" class="logo" alt="Neon Zebra Logo"></div>
-                      <div class="content">
-                          Developed a unique, modern and creative branding program for the relaunch of an independent movie theater is Stamford, CT.
-                      </div>
-                  </div>
-              </ul>
-            </p>
+          <div class="kpi-content">
+            <ul>
+                <div class="box">
+                     <a href="https://drive.google.com/file/d/1WFspgIfEcUX0tx1pV8fzGYjS4RW94I25/view?usp=drive_link" target="_blank">
+                      <div class="title">Development of The Neon Zebra Brand</div>
+                    </a>
+                    <div class="note"><img src="./images/NeonZebra.png" class="logo" alt="Neon Zebra Logo"></div>
+                    <div class="content">
+                        Developed a unique, modern and creative branding program for the relaunch of an independent movie theater is Stamford, CT.
+                    </div>
+                </div>
+            </ul>
+          </div>
         </details>
       </ul>
     </div>
 
   <!-- WarnerMedia -->
-<div class="achievements-container">
+<div class="achievements-container" data-aos="fade-up">
       <img src="./images/WarnerMediaLogo.png" class="logo" alt="WarnerMedia Logo">
       <ul class="achievements-list">
-        <li>Spearheaded product management initiatives, focusing on user experience and customer acquisition through oversight of the unauthenticated web experience. Led the development of a custom CMS solution for marketing purposes and defined the business strategy for HBOMAX.com, demonstrating strategic thinking and a customer-centric approach.</li>
+        <li data-aos="fade-right">
+          Spearheaded product management initiatives, focusing on user experience and customer acquisition through oversight of the unauthenticated web experience. Led the development of a custom CMS solution for marketing purposes and defined the business strategy for HBOMAX.com, demonstrating strategic thinking and a customer-centric approach.
+        </li>
         <details class="kpi-list">
           <summary>Key Results</summary>
-            <p>
-              <ul>
-                <li>Improved user experience and increased customer acquisition by overseeing the unauthenticated web experience, A/B testing, acquisition funnel, marketing, and SEO of HBOMAX.com.</li>
-                <li>Increased flexibility for the marketing editorial team's promotional initiatives and improved efficiency and effectiveness of marketing campaigns by leading the product development of a custom CMS solution for management of marketing materials for HBOMAX.com.</li>
-                <li>Demonstrated strategic thinking and a customer-centric approach to product development by defining business strategy, product requirements, and roadmap for HBOMAX.com launch features.</li>
-                <li>Ensured timely and effective product development and launch by successfully rolling out multiple updates to the HBOMAX.com site prior to the launch of HBO MAX service.</li>
-                <li>Improved user experience and increased customer engagement by successfully launching the HBOMAX.com site updates timed along with the launch of the HBO MAX applications, resulting in improved customer satisfaction and retention.</li>
-              </ul>
-            </p>
+          <div class="kpi-content">
+            <ul>
+              <li>Improved user experience and increased customer acquisition by overseeing the unauthenticated web experience, A/B testing, acquisition funnel, marketing, and SEO of HBOMAX.com.</li>
+              <li>Increased flexibility for the marketing editorial team's promotional initiatives and improved efficiency and effectiveness of marketing campaigns by leading the product development of a custom CMS solution for management of marketing materials for HBOMAX.com.</li>
+              <li>Demonstrated strategic thinking and a customer-centric approach to product development by defining business strategy, product requirements, and roadmap for HBOMAX.com launch features.</li>
+              <li>Ensured timely and effective product development and launch by successfully rolling out multiple updates to the HBOMAX.com site prior to the launch of HBO MAX service.</li>
+              <li>Improved user experience and increased customer engagement by successfully launching the HBOMAX.com site updates timed along with the launch of the HBO MAX applications, resulting in improved customer satisfaction and retention.</li>
+            </ul>
+          </div>
         </details>
         <details class="kpi-list">
           <summary>Key Projects</summary>
-            <p>
-              <ul>
-                  <div class="box">
-                       <a href="https://www.cnbc.com/2020/05/27/hbo-max-new-hbo-streaming-video-service-launches.html" target="_blank">
-                        <div class="title">Managed the Product Launch for HBOMax.com</div>
-                      </a>
-                      <div class="note"><img src="./images/HBOMaxLogo.png" class="logo" alt="HBO MAX Logo"></div>
-                      <div class="content">
-                          Led the product management team responsible for the launch of HBOMax.com. This included managing the SEO, A/B testing and aquisition funnel, along with design and layout of the overall site and structure.
-                      </div>
-                  </div>
-              </ul>
-            </p>
+          <div class="kpi-content">
+            <ul>
+                <div class="box">
+                     <a href="https://www.cnbc.com/2020/05/27/hbo-max-new-hbo-streaming-video-service-launches.html" target="_blank">
+                      <div class="title">Managed the Product Launch for HBOMax.com</div>
+                    </a>
+                    <div class="note"><img src="./images/HBOMaxLogo.png" class="logo" alt="HBO MAX Logo"></div>
+                    <div class="content">
+                        Led the product management team responsible for the launch of HBOMax.com. This included managing the SEO, A/B testing and aquisition funnel, along with design and layout of the overall site and structure.
+                    </div>
+                </div>
+            </ul>
+          </div>
         </details>
       </ul>
     </div>
 
   <!-- HBO -->
-<div class="achievements-container">
+<div class="achievements-container" data-aos="fade-up">
       <img src="./images/HBOLogo.png" class="logo" alt="HBO Logo">
       <ul class="achievements-list">
-        <li>Operated and strategized HBO's digital product offerings, managing content delivery and prioritizing digital distribution partner strategy. Launched multiple products and features across varied partners, collaborating with internal stakeholders for successful execution.
+        <li data-aos="fade-right">
+          Operated and strategized HBO's digital product offerings, managing content delivery and prioritizing digital distribution partner strategy. Launched multiple products and features across varied partners, collaborating with internal stakeholders for successful execution.
         <p>
         Drove the expansion of HBO's digital distribution, fostering relationships with digital partners to grow market share and revenue. Led the successful launch of HBO NOW on multiple new device platforms, displaying adept project management skills and technical prowess.
         </p>
@@ -229,132 +238,136 @@
       </li>
         <details class="kpi-list">
           <summary>Key Results</summary>
-            <p>
-              <ul>
-                <h2>HBO NOW</h2>
-                <li>Successfully ran the operations and distribution product strategy for HBO's digital product offerings, ensuring high levels of operational efficiency and on-time delivery of content assets and metadata, resulting in improved customer experience and increased customer retention.</li>
-                <li>Demonstrated strong leadership skills by overseeing the prioritization of digital distribution partner strategy for new device platforms, features, and distribution partnerships, resulting in successful partnerships and improved revenue streams for HBO's digital product offerings.</li>
-                <li>Successfully launched multiple products and features across various partners, including Amazon, Apple, Google, Hulu, Microsoft, Roku, Samsung, and Sony, demonstrating effective project management skills and the ability to manage complex partnerships and technical integrations.</li>
-                <li>Improved customer experience and increased customer engagement by launching various features, including voice integrations, in-app purchasing, promotional offerings, and virtual reality, across various partners, resulting in increased revenue and market share for HBO's digital product offerings.</li>
-                <li>Collaborated closely with internal stakeholders, including product, marketing, and technology teams, to ensure successful product launches and feature releases, demonstrating strong communication and collaboration skills.</li>
-                <li>Successfully led the expansion of HBO's digital distribution footprint across IAP partners and vMVPD partners, resulting in increased market share and revenue for HBO's digital products.</li>
-                <li>Built strong business relationships with new digital partners such as HTC Vive, LG, and Vizio, resulting in successful partnerships and increased revenue for HBO's digital products.</li>
-                <li>Successfully launched HBO NOW on multiple new device platforms, including Sony PlayStation 3 & 4, Samsung Smart TVs, Chromecast, and Xbox 360 & One, demonstrating strong project management skills and technical expertise.</li>
-                <li>Spearheaded the launch of HBO NOW, HBO's inaugural standalone streaming service, leading a cross-functional team through the project from conception to implementation.</li>
-                <li>Effectively managed daily operations across various vendors and platform developers, fostering collaboration to create a novel product offering that expanded HBO's services.</li>
-                <li>Successfully deployed HBO NOW across multiple platforms including Apple, Android, Amazon, and Roku, significantly widening user accessibility.</li>
-                <li>Leveraged expertise in emerging technologies and products to serve as a Subject Matter Expert (SME) within the organization, providing critical insights and guidance.</li>
-                <li>Conducted comprehensive product demos for key HBO stakeholders, presenting innovative technologies and their potential impact on HBO's business model and future prospects.</li>
-                <li>Contributed to the development of consumer product strategies, outlining product functionality, consumer expectations, and potential impact on HBO, thereby informing executive decision-making and strategic planning.</li>
-                <h2>HBO GO</h2>
-                <li>Delivered key commercial insights to HBO leadership and product teams by utilizing competitive reviews, market trend analysis, and internal research, driving data-informed decision-making.</li>
-                <li>Ensured optimal user experience and functionality by managing maintenance and feature enhancements for HBO GO's in-market services.</li>
-                <li>Shaped the vision for HBO’s future streaming services by assisting in the development of strategic planning and direction, contributing to the growth and evolution of digital media offerings.</li>
-                <li>Orchestrated successful launch activities for new product releases, coordinating cross-functional teams for effective and efficient product rollout.</li>
-                <li>Led a commercial-focused product team for HBO GO, fostering a high-performing, collaborative environment that contributed to the overall success of the product.</li>
-              </ul>
-            </p>
+          <div class="kpi-content">
+            <ul>
+              <h2>HBO NOW</h2>
+              <li>Successfully ran the operations and distribution product strategy for HBO's digital product offerings, ensuring high levels of operational efficiency and on-time delivery of content assets and metadata, resulting in improved customer experience and increased customer retention.</li>
+              <li>Demonstrated strong leadership skills by overseeing the prioritization of digital distribution partner strategy for new device platforms, features, and distribution partnerships, resulting in successful partnerships and improved revenue streams for HBO's digital product offerings.</li>
+              <li>Successfully launched multiple products and features across various partners, including Amazon, Apple, Google, Hulu, Microsoft, Roku, Samsung, and Sony, demonstrating effective project management skills and the ability to manage complex partnerships and technical integrations.</li>
+              <li>Improved customer experience and increased customer engagement by launching various features, including voice integrations, in-app purchasing, promotional offerings, and virtual reality, across various partners, resulting in increased revenue and market share for HBO's digital product offerings.</li>
+              <li>Collaborated closely with internal stakeholders, including product, marketing, and technology teams, to ensure successful product launches and feature releases, demonstrating strong communication and collaboration skills.</li>
+              <li>Successfully led the expansion of HBO's digital distribution footprint across IAP partners and vMVPD partners, resulting in increased market share and revenue for HBO's digital products.</li>
+              <li>Built strong business relationships with new digital partners such as HTC Vive, LG, and Vizio, resulting in successful partnerships and increased revenue for HBO's digital products.</li>
+              <li>Successfully launched HBO NOW on multiple new device platforms, including Sony PlayStation 3 & 4, Samsung Smart TVs, Chromecast, and Xbox 360 & One, demonstrating strong project management skills and technical expertise.</li>
+              <li>Spearheaded the launch of HBO NOW, HBO's inaugural standalone streaming service, leading a cross-functional team through the project from conception to implementation.</li>
+              <li>Effectively managed daily operations across various vendors and platform developers, fostering collaboration to create a novel product offering that expanded HBO's services.</li>
+              <li>Successfully deployed HBO NOW across multiple platforms including Apple, Android, Amazon, and Roku, significantly widening user accessibility.</li>
+              <li>Leveraged expertise in emerging technologies and products to serve as a Subject Matter Expert (SME) within the organization, providing critical insights and guidance.</li>
+              <li>Conducted comprehensive product demos for key HBO stakeholders, presenting innovative technologies and their potential impact on HBO's business model and future prospects.</li>
+              <li>Contributed to the development of consumer product strategies, outlining product functionality, consumer expectations, and potential impact on HBO, thereby informing executive decision-making and strategic planning.</li>
+              <h2>HBO GO</h2>
+              <li>Delivered key commercial insights to HBO leadership and product teams by utilizing competitive reviews, market trend analysis, and internal research, driving data-informed decision-making.</li>
+              <li>Ensured optimal user experience and functionality by managing maintenance and feature enhancements for HBO GO's in-market services.</li>
+              <li>Shaped the vision for HBO’s future streaming services by assisting in the development of strategic planning and direction, contributing to the growth and evolution of digital media offerings.</li>
+              <li>Orchestrated successful launch activities for new product releases, coordinating cross-functional teams for effective and efficient product rollout.</li>
+              <li>Led a commercial-focused product team for HBO GO, fostering a high-performing, collaborative environment that contributed to the overall success of the product.</li>
+            </ul>
+          </div>
         </details>
         <details class="kpi-list">
           <summary>Key Projects</summary>
-            <p>
-              <ul>
-                  <div class="box">
-                       <a href="https://www.theverge.com/2015/4/7/8362229/hbo-now-available-now-apple-tv" target="_blank">
-                        <div class="title">HBO NOW Launch the First OTT DTC Premium SVOD Service</div>
-                      </a>
-                      <div class="note"><img src="./images/HBONOWLogo.png" class="logo" alt="HBO NOW Logo"></div>
-                      <div class="content">
-                          Led the product POV for HBO in partnership with MLBAM to define product requirements and MVP launch product. Negotiated first digital distribution deals for subscription purchases with partners such as Apple, Google, Amazon, etc...
-                      </div>
-                  </div>
-              </ul>
-            </p>
-            <p>
-              <ul>
-                  <div class="box">
-                       <a href="https://www.engadget.com/2019-05-30-game-of-thrones-hbo-virtual-reality-game-htc-viveport-nights-watch.html" target="_blank">
-                        <div class="title">Game of Thrones VR Experience</div>
-                      </a>
-                      <div class="note"><img src="https://s.yimg.com/ny/api/res/1.2/TIYawkAwPhCUMub0Y2NMOg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTk2MDtjZj13ZWJw/https://o.aolcdn.com/images/dimse/5845cadfecd996e0372f/f0f803ec49cac2b58332063ae00a10a267a68cb7/Y3JvcD0xMzY2JTJDNzY4JTJDMCUyQzAmcXVhbGl0eT04NSZmb3JtYXQ9anBnJnJlc2l6ZT0xNjAwJTJDOTAwJmltYWdlX3VyaT1odHRwcyUzQSUyRiUyRnMueWltZy5jb20lMkZvcyUyRmNyZWF0ci11cGxvYWRlZC1pbWFnZXMlMkYyMDE5LTA1JTJGNjQ1Nzk4MTAtODIxZi0xMWU5LTkzN2UtYjg3MTc0ZDM0YjJlJmNsaWVudD1hMWFjYWMzZTFiMzI5MDkxN2Q5MiZzaWduYXR1cmU9MmNlYjE3ZTQ4MTA4MmVmNjc4YmJjZGFjNWNjZGRhZDdhZTAzZTc4OA==" class="logo" alt="HBO NOW Logo"></div>
-                      <div class="content">
-                          Worked on the project team that developed the first HBO and Game of Thrones virtual reality experience. Responsible for building the business relationships with companies such as Meta (Oculus) and HTC (Vive) to support the distrubution of development of the Game of Thrones VR experience to support and launch on newly released VR headsets. Supported the partnership and organized for the release of the experience via the gaming stores such as Valve's Steam platform.
-                      </div>
-                  </div>
-              </ul>
-            </p>
-            <p>
-              <ul>
-                  <div class="box">
-                       <a href="https://www.theverge.com/2019/8/19/20812273/westworld-awakening-vr-hbo-survios-video-game-pricing-release-date-hands-on" target="_blank">
-                        <div class="title">Westworld Awakening VR Experience</div>
-                      </a>
-                      <div class="note"><img src="https://duet-cdn.vox-cdn.com/thumbor/0x0:1280x720/1200x800/filters:focal(763x436:764x437):format(webp)/cdn.vox-cdn.com/uploads/chorus_asset/file/19021093/westworld_awakening.jpeg" class="logo" alt="HBO NOW Logo"></div>
-                      <div class="content">
-                          Worked on the project team that developed a unique first of its kind immersive virtual reality experience based on the Westworld show. Responsible for building the business relationships with companies such as Meta (Oculus) and HTC (Vive) to support the distrubution of development of the Game of Thrones VR experience to support and launch on newly released VR headsets. Supported the partnership and organized for the release of the experience via the gaming stores such as Valve's Steam platform.
-                      </div>
-                  </div>
-              </ul>
-            </p>
+          <div class="kpi-content">
+            <ul>
+                <div class="box">
+                     <a href="https://www.theverge.com/2015/4/7/8362229/hbo-now-available-now-apple-tv" target="_blank">
+                      <div class="title">HBO NOW Launch the First OTT DTC Premium SVOD Service</div>
+                    </a>
+                    <div class="note"><img src="./images/HBONOWLogo.png" class="logo" alt="HBO NOW Logo"></div>
+                    <div class="content">
+                        Led the product POV for HBO in partnership with MLBAM to define product requirements and MVP launch product. Negotiated first digital distribution deals for subscription purchases with partners such as Apple, Google, Amazon, etc...
+                    </div>
+                </div>
+            </ul>
+            <ul>
+                <div class="box">
+                     <a href="https://www.engadget.com/2019-05-30-game-of-thrones-hbo-virtual-reality-game-htc-viveport-nights-watch.html" target="_blank">
+                      <div class="title">Game of Thrones VR Experience</div>
+                    </a>
+                    <div class="note"><img src="https://s.yimg.com/ny/api/res/1.2/TIYawkAwPhCUMub0Y2NMOg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTk2MDtjZj13ZWJw/https://o.aolcdn.com/images/dimse/5845cadfecd996e0372f/f0f803ec49cac2b58332063ae00a10a267a68cb7/Y3JvcD0xMzY2JTJDNzY4JTJDMCUyQzAmcXVhbGl0eT04NSZmb3JtYXQ9anBnJnJlc2l6ZT0xNjAwJTJDOTAwJmltYWdlX3VyaT1odHRwcyUzQSUyRiUyRnMueWltZy5jb20lMkZvcyUyRmNyZWF0ci11cGxvYWRlZC1pbWFnZXMlMkYyMDE5LTA1JTJGNjQ1Nzk4MTAtODIxZi0xMWU5LTkzN2UtYjg3MTc0ZDM0YjJlJmNsaWVudD1hMWFjYWMzZTFiMzI5MDkxN2Q5MiZzaWduYXR1cmU9MmNlYjE3ZTQ4MTA4MmVmNjc4YmJjZGFjNWNjZGRhZDdhZTAzZTc4OA==" class="logo" alt="HBO NOW Logo"></div>
+                    <div class="content">
+                        Worked on the project team that developed the first HBO and Game of Thrones virtual reality experience. Responsible for building the business relationships with companies such as Meta (Oculus) and HTC (Vive) to support the distrubution of development of the Game of Thrones VR experience to support and launch on newly released VR headsets. Supported the partnership and organized for the release of the experience via the gaming stores such as Valve's Steam platform.
+                    </div>
+                </div>
+            </ul>
+            <ul>
+                <div class="box">
+                     <a href="https://www.theverge.com/2019/8/19/20812273/westworld-awakening-vr-hbo-survios-video-game-pricing-release-date-hands-on" target="_blank">
+                      <div class="title">Westworld Awakening VR Experience</div>
+                    </a>
+                    <div class="note"><img src="https://duet-cdn.vox-cdn.com/thumbor/0x0:1280x720/1200x800/filters:focal(763x436:764x437):format(webp)/cdn.vox-cdn.com/uploads/chorus_asset/file/19021093/westworld_awakening.jpeg" class="logo" alt="HBO NOW Logo"></div>
+                    <div class="content">
+                        Worked on the project team that developed a unique first of its kind immersive virtual reality experience based on the Westworld show. Responsible for building the business relationships with companies such as Meta (Oculus) and HTC (Vive) to support the distrubution of development of the Game of Thrones VR experience to support and launch on newly released VR headsets. Supported the partnership and organized for the release of the experience via the gaming stores such as Valve's Steam platform.
+                    </div>
+                </div>
+            </ul>
+          </div>
         </details>
       </ul>
     </div>
 
     <!-- The Hartford -->
-  <div class="achievements-container">
+  <div class="achievements-container" data-aos="fade-up">
       <img src="./images/TheHartfordLogo.png" class="logo" alt="The Hartford Logo">
       <ul class="achievements-list">
-        <li>Member of the 2010 technology leadership development class. A program designed to build leaders in technology through job rotational program and customized leadership development courses.</li>
+        <li data-aos="fade-right">
+          Member of the 2010 technology leadership development class. A program designed to build leaders in technology through job rotational program and customized leadership development courses.
+        </li>
         <details class="kpi-list">
           <summary>Key Results</summary>
-            <p>
-              <ul>
-                <li>Second Rotation - Innovation Studio & Personal Lines New Product Development: Technical expert on consumer telematics new product development. Designed, developed and implemented a strategy and database solution to integrate vendor data into The Hartford systems for analysis and pricing decisions. Led strategy creation for consumer experience and mobile application development. Created an interactive web-based rating game to communicate the benefits of telematic products.</li>
-                <li>First Rotation - Surety Bond IT: Responsible for business analysis, development and quality assurance of maintenance service requests with varying complexity levels. Outlined a strategic vision to improve Bond IT’s database warehouse and reporting speeds. Defined strategy to track the total cost of ownership for the Specialty IT organization’s applications. Project managed the implementation of an Incident Management software solution, which helped The Hartford’s National Accounts Database IT organization improve system incident management tracking.</li>
-                <li>Side Projects: Project manager, designer and developer for internal social and collaboration website; responsible for the strategy, maintenance, and managing of a team of eight resources supporting the website. Campus manager for Quinnipiac University, responsible for outreach and recruitment events. Co-leader of the Hartford Environment Action Team (HEAT), which is focused on lowering The Hartford’s carbon footprint through employee engagement. Reverse mentor for VP of Internal Communications on the topic of emerging technologies and social media.</li>
-              </ul>
-            </p>
+          <div class="kpi-content">
+            <ul>
+              <li>Second Rotation - Innovation Studio & Personal Lines New Product Development: Technical expert on consumer telematics new product development. Designed, developed and implemented a strategy and database solution to integrate vendor data into The Hartford systems for analysis and pricing decisions. Led strategy creation for consumer experience and mobile application development. Created an interactive web-based rating game to communicate the benefits of telematic products.</li>
+              <li>First Rotation - Surety Bond IT: Responsible for business analysis, development and quality assurance of maintenance service requests with varying complexity levels. Outlined a strategic vision to improve Bond IT’s database warehouse and reporting speeds. Defined strategy to track the total cost of ownership for the Specialty IT organization’s applications. Project managed the implementation of an Incident Management software solution, which helped The Hartford’s National Accounts Database IT organization improve system incident management tracking.</li>
+              <li>Side Projects: Project manager, designer and developer for internal social and collaboration website; responsible for the strategy, maintenance, and managing of a team of eight resources supporting the website. Campus manager for Quinnipiac University, responsible for outreach and recruitment events. Co-leader of the Hartford Environment Action Team (HEAT), which is focused on lowering The Hartford’s carbon footprint through employee engagement. Reverse mentor for VP of Internal Communications on the topic of emerging technologies and social media.</li>
+            </ul>
+          </div>
         </details>
         <details class="kpi-list">
           <summary>Key Projects</summary>
-            <p>
-              <ul>
-                  <div class="box">
-                       <a href="https://www.businesswire.com/news/home/20110427006724/en/The-Hartford-Helps-Fleet-Managers-Reduce-Risky-Driving-Behavior" target="_blank">
-                        <div class="title">The Hartford Telematics Program Launch</div>
-                      </a>
-                      <div class="note"><img src="./images/TelematicsDevice.png" class="logo" alt="Telematics Device"></div>
-                      <div class="content">
-                          Led the technical product management for the innovation of The Hartford's first telematics insurance offering designed for commercial fleet management and cost reduction of insurance for commercial clients.
-                      </div>
-                  </div>
-              </ul>
-            </p>
+          <div class="kpi-content">
+            <ul>
+                <div class="box">
+                     <a href="https://www.businesswire.com/news/home/20110427006724/en/The-Hartford-Helps-Fleet-Managers-Reduce-Risky-Driving-Behavior" target="_blank">
+                      <div class="title">The Hartford Telematics Program Launch</div>
+                    </a>
+                    <div class="note"><img src="./images/TelematicsDevice.png" class="logo" alt="Telematics Device"></div>
+                    <div class="content">
+                        Led the technical product management for the innovation of The Hartford's first telematics insurance offering designed for commercial fleet management and cost reduction of insurance for commercial clients.
+                    </div>
+                </div>
+            </ul>
+          </div>
         </details>
       </ul>
     </div>
 
     <!-- Etrade -->
-  <div class="achievements-container">
+  <div class="achievements-container" data-aos="fade-up">
       <img src="./images/EtradeLogo.png" class="logo" alt="ETrade Logo">
       <ul class="achievements-list">
-        <li>Drove strategic analysis required to identify, assess, prioritize and develop potentially disruptive new product innovations. Project managed innovative new product developments, such as facial aging initiative. Responsible for vendor management, financials, strategy, design, and concept development for projects. Collaborated in conducting an internal innovation challenge that had over three hundred participants and generated over sixty ideas.</li>
+        <li data-aos="fade-right">
+          Drove strategic analysis required to identify, assess, prioritize and develop potentially disruptive new product innovations. Project managed innovative new product developments, such as facial aging initiative. Responsible for vendor management, financials, strategy, design, and concept development for projects. Collaborated in conducting an internal innovation challenge that had over three hundred participants and generated over sixty ideas.
+        </li>
       </ul>
     </div>
 
     <!-- Prudential -->
-  <div class="achievements-container">
+  <div class="achievements-container" data-aos="fade-up">
       <img src="./images/PrudentialLogo.png" class="logo" alt="Prudential Logo">
       <ul class="achievements-list">
-        <li>Researched and recommended a technological solution for the finance department’s incentive compensation process. Helped develop requirements and implement resource capacity management for the information technology organization. Administrator of time tracking application for more than 300 resources. Led implementation of a wiki-based project document library. Developed metrics and weekly project reporting that created transparency in financials and allowed for monitoring of time spent on projects. Maintained excel based estimation modeler to better formulate project estimates. Reduced time to run weekly time tracking reports by 75%. Implemented budget governance report and processes that helped to mitigate a potentially multi-million-dollar budget variance.</li>
+        <li data-aos="fade-right">
+          Researched and recommended a technological solution for the finance department’s incentive compensation process. Helped develop requirements and implement resource capacity management for the information technology organization. Administrator of time tracking application for more than 300 resources. Led implementation of a wiki-based project document library. Developed metrics and weekly project reporting that created transparency in financials and allowed for monitoring of time spent on projects. Maintained excel based estimation modeler to better formulate project estimates. Reduced time to run weekly time tracking reports by 75%. Implemented budget governance report and processes that helped to mitigate a potentially multi-million-dollar budget variance.
+        </li>
       </ul>
     </div>
 
   </section>
 
-  <section class="education" id="education-section">
-    <div class="education-container">
+  <section class="education" id="education-section" data-aos="fade-up">
+    <div class="section-title" data-aos="fade-up">
       <h2>Education</h2>
+    </div>
+    <div class="education-container">
       <img src="./images/QuinnipiacLogo.png" class="logo" alt="Quinnipiac University Logo">
       <div class="education-list">
         <ul>
@@ -368,24 +381,28 @@
         <ul>
           <li>Bryant University, College of Business | Business Administration, Bachelor of Science</li>
           <li>Graduated 2007</li>
-          <li>Authored the NEDSI proceeding paper on <a href="https://docplayer.net/19216297-Characteristics-affecting-the-abandonment-of-e-commerce-shopping-carts-a-pilot-study.html" target="_blank" rel="noopener noreferrer">“Characteristics Affecting the Abandonment of E-Commerce Shopping Carts”</a></li>
+          <li>Authored the NEDSI proceeding paper on <a href="https://docplayer.net/19216297-Characteristics-affecting-the-abandonment-of-e-commerce-shopping-carts-a-pilot-study.html" target="_blank" rel="noopener noreferrer">"Characteristics Affecting the Abandonment of E-Commerce Shopping Carts"</a></li>
         </ul>
       </div>
     </div>
   </section>
 
-  <section class="contact" id="contact-section">
-    <div class="contact-container">
+  <section class="contact" id="contact-section" data-aos="fade-up">
+    <div class="section-title" data-aos="fade-up">
       <h2>Contact Me</h2>
+    </div>
+    <div class="contact-container">
       <ul>
-        <a href="mailto:jasoncoppola@gmail.com"><img src="./images/EmailLogo.png" class="contact-logo" alt="Email Logo"></a>
-        <a href="https://www.linkedin.com/in/coppolajason/" target="_blank"><img src="./images/LinkedinLogo.png" class="contact-logo" alt="LinkedIn Logo"></a>
-        <a href="https://calendly.com/jasoncoppola" target="_blank"><img src="./images/CalendlyLogo.png" class="contact-logo-calendly" alt="Calendly Logo"></a>
+        <li><a href="mailto:jasoncoppola@gmail.com"><img src="./images/EmailLogo.png" class="contact-logo" alt="Email Logo"></a></li>
+        <li><a href="https://www.linkedin.com/in/coppolajason/" target="_blank"><img src="./images/LinkedinLogo.png" class="contact-logo" alt="LinkedIn Logo"></a></li>
+        <li><a href="https://calendly.com/jasoncoppola" target="_blank"><img src="./images/CalendlyLogo.png" class="contact-logo-calendly" alt="Calendly Logo"></a></li>
       </ul>
     </div>
   </section>
 
-<script src="script.js"></script>
+  <!-- Keep these script tags -->
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script src="script.js"></script>
 
 </body>
 
