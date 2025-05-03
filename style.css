@@ -154,7 +154,7 @@ h3 {
 }
 
 p, li {
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 h3 + p,
@@ -163,7 +163,7 @@ p + p {
 }
 
 p + h3 {
-  margin-top: 2em;
+  margin-top: 3em;
 }
 
 #intro ul {
@@ -172,11 +172,12 @@ p + h3 {
   margin: 0;
   padding: 0;
   font-size: 10vw;
-  margin-top: 20vh;
+  margin-top: 40vh;
 }
 
 #intro li {
-  line-height: 1.2;
+  margin-top: 4px;
+  line-height: 1;
 }
 
 .gallery {
@@ -185,23 +186,19 @@ p + h3 {
   grid-column-end: 13;
 }
 
-.gallery.one img {
+.gallery.one img,
+.gallery.two img {
   width: 100%;
 }
 
-.gallery.two {
-  display: flex;
-  gap: 40px;
-}
-
-.gallery.two img {
-  width: calc(50% - 20px);
-  display: inline-block;
+.gallery img:last-child {
+  margin-top: 40px;
 }
 
 .data-set {
   margin-top: 2em;
   display: flex;
+  gap: 20px;
 }
 
 .data-set li {
@@ -210,7 +207,7 @@ p + h3 {
 }
 
 .data-set .data-value {
-  font-size: 4em;
+  font-size: 10vw;
 }
 
 .data-set .label {
@@ -218,12 +215,32 @@ p + h3 {
   display: block;
 }
 
+#background h2 {
+  margin-bottom: 4em;
+}
+
+#background p {
+  color: #656565;
+}
+
 #background h3 {
   line-height: 1.25;
+  font-weight: normal;
+}
+
+footer {
+  padding: 20px;
+}
+
+#achievements,
+#background {
+  scroll-margin-top: 56px;
 }
 
 @media screen and (min-width:768px) {
-
+  .data-set .data-value {
+    font-size: 4em;
+  }
 }
 
 @media screen and (min-width:1024px) {
@@ -249,20 +266,28 @@ p + h3 {
   .gallery {
     padding: 80px 0;
   }
-
-  #intro ul {
-    font-size: 5vw;
+  
+  .gallery.two {
+    display: flex;
+    gap: 40px;
   }
 
-  .data-set .data-value {
-    font-size: 6em;
+  .gallery.two img {
+    width: calc(50% - 20px);
+    display: inline-block;
+  }
+
+  .gallery img:last-child {
+    margin-top: 0;
+  }
+  
+  #intro ul {
+    font-size: 5vw;
   }
 }
 
 @media screen and (min-width:1280px) {
-
-}
-
-@media screen and (min-width:1440px) {
-
+  .data-set .data-value {
+    font-size: 6em;
+  }
 }
