@@ -1,398 +1,268 @@
-/* Styles */
+/*
+ ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄ 
+▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀▀▀  ▀▀▀▀█░█▀▀▀▀ 
+▐░▌       ▐░▌▐░▌          ▐░▌          ▐░▌               ▐░▌     
+▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄▄▄      ▐░▌     
+▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌     
+▐░█▀▀▀▀█░█▀▀ ▐░█▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░▌     
+▐░▌     ▐░▌  ▐░▌                    ▐░▌▐░▌               ▐░▌     
+▐░▌      ▐░▌ ▐░█▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░▌     
+▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌     
+ ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀       ▀      
+ */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/*====================================================*/
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
-  font-family: 'Arial', sans-serif;
-  line-height: 1.6;
-  color: #333;
+  font-family: 'Inter', sans-serif;
+  color: #101010;
   margin: 0;
   padding: 0;
 }
 
-/* Smooth Scrolling Section*/
-
-html {
-  scroll-behavior: smooth;
+a:link, a:visited {
+  text-decoration: none;
+  color: #101010;
 }
 
-/* Hero section */
-
-.hero {
-  position: relative;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: #fff;
+a:hover {
+  color: #a1a1a1;
 }
 
-.hero__bg {
-  position: absolute;
-  top: 0;
-  left: 0;
+/* Layout */
+section {
+  padding: 40px 0;
+}
+
+nav {
   width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
-.hero__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.hero__cnt {
-  text-align: center;
-  color: #fff;
-  padding: 2rem;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
-}
-
-/* Add any additional styles for h1, h2, and links as needed */
-
-/* About section */
-
-.about {
-  padding: 50px;
-}
-
-.about-container {
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-/* Achievements section */
-
-.achievements {
-  padding: 50px;
-  background-color: #f2f2f2;
-}
-
-.achievements-container {
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-.achievements-list {
-  list-style: none;
-  padding: 20px;
-  margin: 0;
-  border-bottom: 1px solid grey;
-}
-
-.kpi-list {
-  margin-top: 20px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.kpi-list:hover {
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.kpi-list summary {
-  padding: 15px 20px;
-  background-color: #f0f0f0;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.kpi-list summary:hover {
-  background-color: #e0e0e0;
-}
-
-.kpi-list[open] summary {
-  background-color: #007bff;
-  color: white;
-}
-
-.kpi-content {
-  padding: 20px;
-  background-color: white;
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-}
-
-.kpi-list[open] .kpi-content {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.kpi-content ul {
-  padding-left: 20px;
-}
-
-.kpi-content li {
-  margin-bottom: 10px;
-}
-
-/* Education section */
-
-.education {
-  padding: 50px;
-}
-
-.education-container {
-  max-width: 700px;
-  margin: 0 auto;
+  position: fixed;
+  background: white;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 20px 20px;
+  gap: 40px;
+  box-sizing: border-box;
 }
 
-.education-container .logo {
-  width: 150px;
-  margin-bottom: 1rem;
+.content-wrapper {
+  margin: 0 20px;
 }
 
-.education-list {
-  text-align: center;
-  margin-bottom: 2rem;
+/* Grid Layout */
+.offset-col-6 {
+  display: inline-block;
+  grid-column-start: 7;
+  grid-column-end: 13;
 }
 
-.education-list ul {
-  list-style-type: none;
-  padding: 0;
+.col-6 {
+  display: inline-block;
 }
 
-.education-list li {
-  margin-bottom: 0.5rem;
+.col-6.start {
+  grid-column-start: 1;
+  grid-column-end: 7;
 }
 
-  /* Contact section */
-
-.contact {
-  padding: 50px;
-  background-color: #f2f2f2;
-
+.col-6.end {
+  grid-column-start: 7;
+  grid-column-end: 13;
 }
 
-.contact-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.col-6.start + .col-6.end {
+  margin-top: 40px;
 }
 
-.contact-container ul {
-  list-style-type: none;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Utilities */
+.black {
+  background: #0a0a0a;
+  color: #eaeaea;
 }
 
-.contact-container li {
-  margin: 0 1.5rem; /* Increased horizontal margin for more space between logos */
+.gray {
+  background: #f5f5f5;
 }
-
-.contact-logo,
-.contact-logo-calendly {
-  width: 50px; /* Set a fixed width */
-  height: auto; /* Allow height to adjust automatically */
-  max-height: 50px; /* Set a maximum height if needed */
-  object-fit: contain; /* Ensure the entire image is visible without distortion */
-  transition: transform 0.3s ease;
-}
-
-.contact-logo:hover,
-.contact-logo-calendly:hover {
-  transform: scale(1.1);
-}
-
-/* If the Calendly logo needs to be slightly larger, you can adjust it individually */
-.contact-logo-calendly {
-  width: 60px; /* Slightly larger width */
-  max-height: 60px; /* Adjust max-height accordingly */
-}
-
-/* Link Preview Section*/
-
-.box {
-  padding:20px;
-  background: #fff;
-  border-radius: 20px;
-}
-
-.box .title {
-  text-align: center;
-  font-size: 19px;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.box #content {
-  line-height: 22px;
-}
-        
-.box #content a {
-  color:#06c;
-  text-decoration: underline;
-}
-
-.box .note {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-/* Image Format Section*/
 
 .logo {
-  padding:20px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  height: 40px;
+}
+
+/* Design */
+nav h1 {
+  font-size: 1em;
   width: 50%;
+  font-weight: normal;
 }
 
-/* Snap Scrolling section */
-
-.scroller {
-  height: 200px;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+nav h2 {
+  font-size: 1em;
+  width: 50%;
+  font-weight: normal;
 }
 
-.scroller section {
-  scroll-snap-align: start;
+/* Type */
+h3 {
+  font-weight: bold;
 }
 
-/* Add these new styles */
-.header {
-  background-color: #fff;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  position: fixed;
+p, li {
+  line-height: 1.4;
+}
+
+h3 + p,
+p + p {
+  margin-top: 1em;
+}
+
+p + h3 {
+  margin-top: 2em;
+}
+
+#intro ul {
+  list-style: none;
+  list-style-position: initial;
+  margin: 0;
+  padding: 0;
+  font-size: 10vw;
+  margin-top: 20vh;
+}
+
+#intro li {
+  line-height: 1.2;
+}
+
+.gallery {
+  padding: 40px 0;
+  grid-column-start: 1;
+  grid-column-end: 13;
+}
+
+.gallery.one img {
   width: 100%;
-  z-index: 1000;
 }
 
-.navbar {
+.gallery.two {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.5rem;
+  gap: 40px;
 }
 
-.nav-menu {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.nav-item {
-  margin-left: 5rem;
-}
-
-.nav-link {
-  font-size: 1.1rem;
-  font-weight: 400;
-  color: #475569;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.nav-link:hover {
-  color: #3b82f6;
-}
-
-.hamburger {
-  display: none;
-}
-
-.bar {
-  display: block;
-  width: 25px;
-  height: 3px;
-  margin: 5px auto;
-  transition: all 0.3s ease-in-out;
-  background-color: #101010;
-}
-
-@media only screen and (max-width: 768px) {
-  .nav-menu {
-    position: fixed;
-    left: -100%;
-    top: 5rem;
-    flex-direction: column;
-    background-color: #fff;
-    width: 100%;
-    border-radius: 10px;
-    text-align: center;
-    transition: 0.3s;
-    box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
-  }
-
-  .nav-menu.active {
-    left: 0;
-  }
-
-  .nav-item {
-    margin: 2.5rem 0;
-  }
-
-  .hamburger {
-    display: block;
-    cursor: pointer;
-  }
-}
-
-/* Add smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Style sections */
-section {
-  padding: 4rem 2rem;
-}
-
-/* Add hover effects to achievement boxes */
-.box {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.box:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.section-title {
-  text-align: center;
-  width: 100%;
-  margin-bottom: 2rem;
-}
-
-.section-title h2 {
+.gallery.two img {
+  width: calc(50% - 20px);
   display: inline-block;
-  position: relative;
-  font-size: 2.5rem;
-  color: var(--secondary-color);
 }
 
-.section-title h2::after {
-  content: '';
+.data-set {
+  margin-top: 2em;
+  display: flex;
+}
+
+.data-set li {
+  display: inline-block;
+  flex: 1;
+}
+
+.data-set .data-value {
+  font-size: 4em;
+}
+
+.data-set .label {
+  font-size: 1em;
   display: block;
-  width: 50%;
-  height: 2px;
-  background-color: var(--primary-color);
-  position: absolute;
-  bottom: -10px;
-  left: 25%;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+#background h3 {
+  line-height: 1.25;
+}
+
+@media screen and (min-width:768px) {
+
+}
+
+@media screen and (min-width:1024px) {
+  .content-wrapper {
+    margin: 0 40px;
   }
-  to {
-    opacity: 1;
+
+  section {
+    padding: 80px 0;
+  }
+
+  .grid {
+    display: grid;
+    margin: 0 40px;
+    column-gap: 40px;
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  .col-6.start + .col-6.end {
+    margin-top: 0
+  }
+
+  .gallery {
+    padding: 80px 0;
+  }
+
+  #intro ul {
+    font-size: 5vw;
+  }
+
+  .data-set .data-value {
+    font-size: 6em;
   }
 }
 
-.hero.fade-in {
-  animation: fadeIn 2s ease-in-out;
+@media screen and (min-width:1280px) {
+
+}
+
+@media screen and (min-width:1440px) {
+
 }
