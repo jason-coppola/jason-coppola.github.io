@@ -90,6 +90,38 @@ nav {
   padding: 20px 20px;
   gap: 40px;
   box-sizing: border-box;
+  z-index: 100; /* Ensure navigation appears above other elements */
+}
+
+/* Breadcrumb Navigation styles - for SEO improvement #12 */
+nav.breadcrumb {
+  position: relative; 
+  background: transparent;
+  padding: 10px 20px;
+  margin-top: 60px; /* To appear below the fixed main nav */
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumb li {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.breadcrumb li:after {
+  content: ">";
+  margin-left: 8px;
+}
+
+.breadcrumb li:last-child:after {
+  content: "";
+  margin-left: 0;
 }
 
 .content-wrapper {
@@ -148,9 +180,34 @@ nav h2 {
   font-weight: normal;
 }
 
-/* Type */
-h3 {
+/* Type - Fixed heading hierarchy for SEO improvement #3 */
+h1 {
+  font-size: 2em;
   font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+h3 {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 0.3em;
+}
+
+/* Enhanced internal links styling - for SEO improvement #7 */
+a.internal-link {
+  text-decoration: underline;
+  color: #101010;
+  font-weight: 500;
+}
+
+a.internal-link:hover {
+  color: #444;
 }
 
 p, li {
@@ -228,13 +285,75 @@ p + h3 {
   font-weight: normal;
 }
 
+#publications p {
+  color: #656565;
+}
+
+#publications h2 {
+  margin-bottom: 4em;
+}
+
+#publications h3 {
+  line-height: 1.25;
+  font-weight: normal;
+}
+
+#speaker p {
+  color: #656565;
+}
+
+#speaker h2 {
+  margin-bottom: 4em;
+}
+
+#speaker h3 {
+  line-height: 1.25;
+  font-weight: normal;
+}
+
 footer {
   padding: 20px;
 }
 
 #achievements,
-#background {
+#background,
+#publications,
+#speaker {
   scroll-margin-top: 56px;
+}
+
+/* Mobile Optimization Enhancements - for SEO improvement #8 */
+@media screen and (max-width: 768px) {
+  .grid {
+    display: block;
+  }
+  
+  .col-6 {
+    width: 100%;
+    padding: 0 15px;
+  }
+  
+  .gallery.two img {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .data-set {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  h1 {
+    font-size: 1.8em;
+  }
+  
+  h2 {
+    font-size: 1.3em;
+  }
+  
+  .content-wrapper {
+    margin: 0 15px;
+  }
 }
 
 @media screen and (min-width:768px) {
@@ -289,5 +408,20 @@ footer {
 @media screen and (min-width:1280px) {
   .data-set .data-value {
     font-size: 6em;
+  }
+}
+
+/* Print styles for better accessibility */
+@media print {
+  nav {
+    position: relative;
+  }
+  
+  body {
+    font-size: 12pt;
+  }
+  
+  a[href]:after {
+    content: " (" attr(href) ")";
   }
 }
