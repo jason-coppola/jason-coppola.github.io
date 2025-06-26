@@ -254,6 +254,164 @@ document.addEventListener('DOMContentLoaded', () => {
             el.classList.add('fade-in');
         });
     }
+
+    // StreamTV Image Gallery functionality
+    function initStreamTVGallery() {
+        const gallery = document.querySelector('.streamtv-gallery');
+        if (!gallery) return;
+        
+        const images = gallery.querySelectorAll('.gallery-image');
+        const prevBtn = gallery.querySelector('.prev-btn');
+        const nextBtn = gallery.querySelector('.next-btn');
+        const currentImageSpan = gallery.querySelector('.current-image');
+        const totalImagesSpan = gallery.querySelector('.total-images');
+        
+        let currentIndex = 0;
+        // let autoPlayInterval; // Removed auto-rotation
+        
+        // Set total images count
+        if (totalImagesSpan) {
+            totalImagesSpan.textContent = images.length;
+        }
+        
+        function showImage(index) {
+            // Remove active class from all images
+            images.forEach(img => img.classList.remove('active'));
+            
+            // Add active class to current image
+            images[index].classList.add('active');
+            
+            // Update image counter
+            if (currentImageSpan) {
+                currentImageSpan.textContent = index + 1;
+            }
+            
+            currentIndex = index;
+        }
+        
+        function nextImage() {
+            const nextIndex = (currentIndex + 1) % images.length;
+            showImage(nextIndex);
+        }
+        
+        function prevImage() {
+            const prevIndex = (currentIndex - 1 + images.length) % images.length;
+            showImage(prevIndex);
+        }
+        
+        // function startAutoPlay() {
+        //     autoPlayInterval = setInterval(nextImage, 5000); // Change image every 5 seconds
+        // }
+        
+        // function stopAutoPlay() {
+        //     if (autoPlayInterval) {
+        //         clearInterval(autoPlayInterval);
+        //     }
+        // }
+        
+        // Event listeners for overlay buttons
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                prevImage();
+                // stopAutoPlay();
+                // startAutoPlay(); // Restart autoplay
+            });
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                nextImage();
+                // stopAutoPlay();
+                // startAutoPlay(); // Restart autoplay
+            });
+        }
+        
+        // Pause autoplay on hover - removed since no autoplay
+        // gallery.addEventListener('mouseenter', stopAutoPlay);
+        // gallery.addEventListener('mouseleave', startAutoPlay);
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (gallery.matches(':hover') || gallery.matches(':focus-within')) {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    prevImage();
+                    // stopAutoPlay();
+                    // startAutoPlay();
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    nextImage();
+                    // stopAutoPlay();
+                    // startAutoPlay();
+                }
+            }
+        });
+        
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+        
+        gallery.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        });
+        
+        gallery.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
+            
+            // Only handle horizontal swipes (ignore vertical scrolling)
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > swipeThreshold) {
+                if (diffX > 0) {
+                    // Swipe left - next image
+                    nextImage();
+                } else {
+                    // Swipe right - previous image
+                    prevImage();
+                }
+                // stopAutoPlay();
+                // startAutoPlay();
+            }
+        }
+        
+        // Start autoplay - removed
+        // startAutoPlay();
+        
+        // Track gallery interactions for analytics
+        gallery.addEventListener('click', (e) => {
+            if (e.target.classList.contains('gallery-btn')) {
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'gallery_interaction', {
+                        'event_category': 'Content Engagement',
+                        'event_label': 'StreamTV Gallery Navigation'
+                    });
+                }
+            }
+        });
+        
+        // Handle visibility change to pause autoplay when tab is not active - removed
+        // document.addEventListener('visibilitychange', () => {
+        //     if (document.hidden) {
+        //         stopAutoPlay();
+        //     } else {
+        //         startAutoPlay();
+        //     }
+        // });
+    }
+    
+    // Initialize the gallery
+    initStreamTVGallery();
 });
 
 // Add page load time tracking for performance monitoring

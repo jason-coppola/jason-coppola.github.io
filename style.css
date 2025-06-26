@@ -430,3 +430,258 @@ footer {
     content: " (" attr(href) ")";
   }
 }
+
+/* StreamTV Image Gallery Styles */
+.streamtv-gallery {
+  margin-top: 30px;
+  margin-bottom: 60px;
+  position: relative;
+  max-width: 100%;
+}
+
+.gallery-container {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  background: #f5f5f5;
+}
+
+.gallery-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+  border-radius: 12px;
+}
+
+.gallery-image.active {
+  opacity: 1;
+}
+
+/* Overlay Navigation Buttons */
+.gallery-btn.overlay-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+}
+
+.gallery-btn.overlay-btn:hover {
+  background: rgba(0, 0, 0, 0.5);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.gallery-btn.overlay-btn:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.gallery-btn.overlay-btn.prev-btn {
+  left: 20px;
+}
+
+.gallery-btn.overlay-btn.next-btn {
+  right: 20px;
+}
+
+/* Image Counter */
+.image-counter {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+
+.gallery-controls {
+  display: none; /* Hide the dots section */
+}
+
+/* Responsive Design */
+@media screen and (max-width: 480px) {
+  .gallery-container {
+    border-radius: 8px;
+  }
+  
+  .gallery-image {
+    border-radius: 8px;
+  }
+  
+  .gallery-btn.overlay-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  
+  .gallery-btn.overlay-btn.prev-btn {
+    left: 12px;
+  }
+  
+  .gallery-btn.overlay-btn.next-btn {
+    right: 12px;
+  }
+  
+  .image-counter {
+    bottom: 12px;
+    right: 12px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (min-width: 481px) and (max-width: 768px) {
+  .gallery-btn.overlay-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 19px;
+  }
+  
+  .gallery-btn.overlay-btn.prev-btn {
+    left: 16px;
+  }
+  
+  .gallery-btn.overlay-btn.next-btn {
+    right: 16px;
+  }
+  
+  .image-counter {
+    bottom: 16px;
+    right: 16px;
+    padding: 7px 11px;
+    font-size: 13px;
+  }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .gallery-container {
+    border-radius: 10px;
+  }
+  
+  .gallery-image {
+    border-radius: 10px;
+  }
+  
+  .gallery-btn.overlay-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 21px;
+  }
+  
+  .gallery-btn.overlay-btn.prev-btn {
+    left: 18px;
+  }
+  
+  .gallery-btn.overlay-btn.next-btn {
+    right: 18px;
+  }
+  
+  .image-counter {
+    bottom: 18px;
+    right: 18px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .gallery-container {
+    border-radius: 12px;
+  }
+  
+  .gallery-image {
+    border-radius: 12px;
+  }
+  
+  .gallery-btn.overlay-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+  
+  .gallery-btn.overlay-btn.prev-btn {
+    left: 24px;
+  }
+  
+  .gallery-btn.overlay-btn.next-btn {
+    right: 24px;
+  }
+  
+  .image-counter {
+    bottom: 24px;
+    right: 24px;
+    padding: 10px 14px;
+    font-size: 15px;
+  }
+}
+
+/* Touch-friendly improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .gallery-btn.overlay-btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  /* Increase touch targets on mobile */
+  .gallery-btn.overlay-btn.prev-btn {
+    left: 8px;
+  }
+  
+  .gallery-btn.overlay-btn.next-btn {
+    right: 8px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .gallery-btn.overlay-btn {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid white;
+  }
+  
+  .image-counter {
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid white;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .gallery-image {
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .gallery-btn.overlay-btn {
+    transition: background-color 0.3s ease;
+  }
+  
+  .gallery-btn.overlay-btn:hover {
+    transform: translateY(-50%);
+  }
+}
