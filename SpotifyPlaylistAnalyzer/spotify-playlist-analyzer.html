@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Playlist Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1db954 0%, #191414 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #191414;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #1db954, #191414);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.7;
+        }
+
+        .auth-section {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .spotify-login-btn {
+            background: #1db954;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .spotify-login-btn:hover {
+            background: #1ed760;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(29, 185, 84, 0.3);
+        }
+
+        .user-info {
+            background: linear-gradient(135deg, #1db954, #1ed760);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .playlist-selection {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #1db954;
+            box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #1db954, #1ed760);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(29, 185, 84, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #9ca3af);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 10px 25px rgba(107, 114, 128, 0.3);
+        }
+
+        .playlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .playlist-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .playlist-card:hover, .playlist-card.selected {
+            border-color: #1db954;
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.2);
+        }
+
+        .playlist-card.selected {
+            background: #f0fdf4;
+        }
+
+        .playlist-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #1db954, #1ed760);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .playlist-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: #1e293b;
+        }
+
+        .playlist-details {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.3);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .song-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .song-item {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: background-color 0.2s ease;
+        }
+
+        .song-item:hover {
+            background-color: #f8fafc;
+        }
+
+        .song-item:last-child {
+            border-bottom: none;
+        }
+
+        .song-artwork {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #1db954, #1ed760);
+            border-radius: 6px;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .song-info {
+            flex-grow: 1;
+        }
+
+        .song-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .song-details {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .filter-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .genre-tag {
+            background: linear-gradient(135deg, #1db954, #1ed760);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #1db954;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #15803d;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .setup-instructions {
+            background: #fefce8;
+            border: 1px solid #fde047;
+            color: #ca8a04;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .setup-instructions h3 {
+            margin-bottom: 10px;
+            color: #92400e;
+        }
+
+        .setup-instructions ol {
+            margin-left: 20px;
+        }
+
+        .setup-instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Spotify Playlist Analyzer</h1>
+            <p>Connect your Spotify account to analyze and create custom playlists</p>
+        </div>
+
+        <div id="setupInstructions" class="setup-instructions">
+            <h3>⚠️ Setup Required</h3>
+            <p>To use Spotify API features, you'll need to set up a Spotify App. Here's how:</p>
+            <ol>
+                <li>Go to <a href="https://developer.spotify.com/dashboard" target="_blank">Spotify Developer Dashboard</a></li>
+                <li>Click "Create App" and fill in the details</li>
+                <li>Set redirect URI to your current page URL</li>
+                <li>Copy your Client ID and paste it below</li>
+                <li>Make sure your app is in "Development Mode" for testing</li>
+            </ol>
+        </div>
+
+        <div class="input-group">
+            <label for="clientId">Spotify Client ID</label>
+            <input type="text" id="clientId" placeholder="Enter your Spotify App Client ID">
+            <button class="btn" onclick="saveClientId()" style="margin-top: 10px;">Save Client ID</button>
+        </div>
+
+        <div id="authSection" class="auth-section">
+            <div id="loginSection">
+                <h3>Connect Your Spotify Account</h3>
+                <p>Login to analyze your playlists and create new ones</p>
+                <button class="spotify-login-btn" onclick="loginToSpotify()" disabled>
+                    🎵 Connect Spotify Account
+                </button>
+            </div>
+
+            <div id="userSection" class="hidden">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">👤</div>
+                    <div>
+                        <h3 id="userName">Loading...</h3>
+                        <p id="userDetails">Spotify Premium User</p>
+                        <button class="btn btn-secondary" onclick="logout()" style="margin-top: 10px; padding: 8px 16px; font-size: 14px;">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="playlistSection" class="playlist-selection hidden">
+            <h3>Select a Playlist to Analyze</h3>
+            <div class="input-group">
+                <button class="btn" onclick="loadPlaylists()">Load My Playlists</button>
+                <button class="btn btn-secondary" onclick="toggleManualInput()" style="margin-left: 10px;">Manual Input</button>
+            </div>
+            
+            <div id="playlistGrid" class="playlist-grid">
+                <!-- Playlists will be loaded here -->
+            </div>
+
+            <div id="manualInputSection" class="hidden">
+                <div class="input-group">
+                    <label for="playlistInput">Manual Playlist Data (JSON format or song list)</label>
+                    <textarea id="playlistInput" rows="8" placeholder='Enter your playlist data in JSON format or paste a simple list of songs'></textarea>
+                </div>
+                <button class="btn" onclick="analyzeManualPlaylist()">Analyze Manual Input</button>
+            </div>
+        </div>
+
+        <div id="loadingSection" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Analyzing your playlist...</p>
+        </div>
+
+        <div id="resultsSection" class="results-section hidden">
+            <h2>📊 Playlist Analysis</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="totalSongs">0</h3>
+                    <p>Total Songs</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalGenres">0</h3>
+                    <p>Unique Genres</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="yearRange">-</h3>
+                    <p>Year Range</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="avgYear">-</h3>
+                    <p>Average Year</p>
+                </div>
+            </div>
+
+            <div class="filter-controls">
+                <div class="input-group">
+                    <label for="genreFilter">Filter by Genre</label>
+                    <select id="genreFilter" onchange="filterPlaylist()">
+                        <option value="">All Genres</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="yearFilter">Filter by Year</label>
+                    <select id="yearFilter" onchange="filterPlaylist()">
+                        <option value="">All Years</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="yearRangeStart">Year Range Start</label>
+                    <input type="number" id="yearRangeStart" min="1900" max="2024" onchange="filterPlaylist()">
+                </div>
+                <div class="input-group">
+                    <label for="yearRangeEnd">Year Range End</label>
+                    <input type="number" id="yearRangeEnd" min="1900" max="2024" onchange="filterPlaylist()">
+                </div>
+            </div>
+
+            <button class="btn" onclick="createFilteredPlaylist()" style="margin-bottom: 20px;">
+                Create Filtered Playlist
+            </button>
+            <button class="btn btn-secondary" onclick="saveToSpotify()" style="margin-bottom: 20px; margin-left: 10px;">
+                Save to Spotify
+            </button>
+
+            <div class="song-list" id="songList">
+                <!-- Songs will be populated here -->
+            </div>
+        </div>
+
+        <div id="filteredPlaylistSection" class="results-section hidden">
+            <h2>🎯 Filtered Playlist</h2>
+            <div id="filteredSongList" class="song-list">
+                <!-- Filtered songs will be populated here -->
+            </div>
+            <button class="btn" onclick="downloadPlaylist()" style="margin-top: 20px;">
+                Download as JSON
+            </button>
+            <button class="btn btn-secondary" onclick="saveFilteredToSpotify()" style="margin-top: 20px; margin-left: 10px;">
+                Save to Spotify
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Spotify API configuration
+        let CLIENT_ID = '';
+        let REDIRECT_URI = window.location.origin + window.location.pathname;
+        let accessToken = '';
+        let currentUser = null;
+        let userPlaylists = [];
+        let selectedPlaylist = null;
+        
+        // Analysis data
+        let originalPlaylist = [];
+        let analyzedPlaylist = [];
+        let filteredPlaylist = [];
+
+        // Genre classification database
+        const genreKeywords = {
+            'Pop': ['pop', 'mainstream', 'hit', 'chart', 'radio'],
+            'Rock': ['rock', 'guitar', 'band', 'alternative', 'indie'],
+            'Hip Hop': ['hip hop', 'rap', 'trap', 'beats', 'rhyme'],
+            'R&B': ['r&b', 'soul', 'smooth', 'groove', 'rhythm'],
+            'Electronic': ['electronic', 'edm', 'techno', 'house', 'synth'],
+            'Country': ['country', 'folk', 'acoustic', 'nashville', 'bluegrass'],
+            'Jazz': ['jazz', 'blues', 'swing', 'instrumental', 'saxophone'],
+            'Classical': ['classical', 'orchestra', 'symphony', 'piano', 'violin'],
+            'Reggae': ['reggae', 'jamaica', 'ska', 'dub', 'island'],
+            'Latin': ['latin', 'salsa', 'reggaeton', 'spanish', 'brazil']
+        };
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if we're returning from Spotify authorization
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const error = urlParams.get('error');
+            
+            if (code) {
+                exchangeCodeForToken(code);
+            } else if (error) {
+                showError('Spotify authorization failed: ' + error);
+            }
+            
+            // Load saved client ID
+            const savedClientId = localStorage.getItem('spotify_client_id');
+            if (savedClientId) {
+                CLIENT_ID = savedClientId;
+                document.getElementById('clientId').value = savedClientId;
+                document.querySelector('.spotify-login-btn').disabled = false;
+            }
+            
+            // Check for existing token
+            const savedToken = localStorage.getItem('spotify_access_token');
+            if (savedToken) {
+                accessToken = savedToken;
+                loadUserProfile();
+            }
+        });
+
+        function saveClientId() {
+            const clientId = document.getElementById('clientId').value.trim();
+            if (!clientId) {
+                showError('Please enter a valid Client ID');
+                return;
+            }
+            
+            CLIENT_ID = clientId;
+            localStorage.setItem('spotify_client_id', clientId);
+            document.querySelector('.spotify-login-btn').disabled = false;
+            showSuccess('Client ID saved! You can now connect to Spotify.');
+        }
+
+        function loginToSpotify() {
+            if (!CLIENT_ID) {
+                showError('Please set your Spotify Client ID first');
+                return;
+            }
+            
+            const scope = 'playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private';
+            const authUrl = `https://accounts.spotify.com/authorize?` +
+                `client_id=${CLIENT_ID}&` +
+                `response_type=code&` +
+                `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
+                `scope=${encodeURIComponent(scope)}`;
+            
+            window.location.href = authUrl;
+        }
+
+        function exchangeCodeForToken(code) {
+            // Note: In a real application, you would need a backend server to securely exchange
+            // the authorization code for an access token. For this demo, we'll use the implicit flow instead.
+            showError('Token exchange requires a backend server. Please use the manual input option for now.');
+            
+            // Clear the URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        async function makeSpotifyRequest(endpoint, options = {}) {
+            if (!accessToken) {
+                throw new Error('Not authenticated');
+            }
+            
+            const response = await fetch(`https://api.spotify.com/v1${endpoint}`, {
+                ...options,
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
+            
+            if (!response.ok) {
+                if (response.status === 401) {
+                    // Token expired
+                    localStorage.removeItem('spotify_access_token');
+                    accessToken = '';
+                    showError('Session expired. Please login again.');
+                    logout();
+                    return null;
+                }
+                throw new Error(`Spotify API error: ${response.status}`);
+            }
+            
+            return response.json();
+        }
+
+        async function loadUserProfile() {
+            try {
+                currentUser = await makeSpotifyRequest('/me');
+                if (currentUser) {
+                    document.getElementById('userName').textContent = currentUser.display_name || 'Spotify User';
+                    document.getElementById('userDetails').textContent = `${currentUser.followers?.total || 0} followers • ${currentUser.product || 'Free'} user`;
+                    
+                    if (currentUser.images && currentUser.images[0]) {
+                        document.getElementById('userAvatar').style.backgroundImage = `url(${currentUser.images[0].url})`;
+                        document.getElementById('userAvatar').style.backgroundSize = 'cover';
+                        document.getElementById('userAvatar').textContent = '';
+                    }
+                    
+                    document.getElementById('loginSection').classList.add('hidden');
+                    document.getElementById('userSection').classList.remove('hidden');
+                    document.getElementById('playlistSection').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Failed to load user profile:', error);
+                showError('Failed to load user profile. Please try logging in again.');
+                logout();
+            }
+        }
+
+        async function loadPlaylists() {
+            if (!accessToken) {
+                showError('Please login to Spotify first');
+                return;
+            }
+            
+            try {
+                showLoading('Loading your playlists...');
+                const response = await makeSpotifyRequest('/me/playlists?limit=50');
+                if (response) {
+                    userPlaylists = response.items;
+                    displayPlaylists();
+                }
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                console.error('Failed to load playlists:', error);
+                showError('Failed to load playlists. Please try again.');
+            }
+        }
+
+        function displayPlaylists() {
+            const playlistGrid = document.getElementById('playlistGrid');
+            playlistGrid.innerHTML = '';
+            
+            userPlaylists.forEach(playlist => {
+                const playlistCard = document.createElement('div');
+                playlistCard.className = 'playlist-card';
+                playlistCard.onclick = () => selectPlaylist(playlist);
+                
+                const imageUrl = playlist.images && playlist.images[0] ? playlist.images[0].url : '';
+                
+                playlistCard.innerHTML = `
+                    <div class="playlist-image" style="${imageUrl ? `background-image: url(${imageUrl})` : ''}">
+                        ${!imageUrl ? '🎵' : ''}
+                    </div>
+                    <div class="playlist-title">${playlist.name}</div>
+                    <div class="playlist-details">
+                        ${playlist.tracks.total} songs • By ${playlist.owner.display_name}
+                    </div>
+                `;
+                
+                playlistGrid.appendChild(playlistCard);
+            });
+        }
+
+        function selectPlaylist(playlist) {
+            // Remove previous selection
+            document.querySelectorAll('.playlist-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selection to clicked card
+            event.currentTarget.classList.add('selected');
+            selectedPlaylist = playlist;
+            
+            // Analyze the selected playlist
+            analyzeSpotifyPlaylist(playlist);
+        }
+
+        async function analyzeSpotifyPlaylist(playlist) {
+            try {
+                showLoading('Analyzing playlist...');
+                
+                // Get all tracks from the playlist
+                let allTracks = [];
+                let offset = 0;
+                const limit = 100;
+                
+                do {
+                    const response = await makeSpotifyRequest(`/playlists/${playlist.id}/tracks?offset=${offset}&limit=${limit}`);
+                    if (response && response.items) {
+                        allTracks = allTracks.concat(response.items);
+                        offset += limit;
+                        
+                        if (response.items.length < limit) break;
+                    } else {
+                        break;
+                    }
+                } while (true);
+                
+                // Convert Spotify tracks to our format
+                originalPlaylist = allTracks
+                    .filter(item => item.track && item.track.name) // Filter out null tracks
+                    .map(item => ({
+                        id: item.track.id,
+                        name: item.track.name,
+                        artist: item.track.artists.map(a => a.name).join(', '),
+                        album: item.track.album.name,
+                        year: parseInt(item.track.album.release_date?.substring(0, 4)) || new Date().getFullYear(),
+                        image: item.track.album.images && item.track.album.images[0] ? item.track.album.images[0].url : null,
+                        uri: item.track.uri,
+                        external_urls: item.track.external_urls
+                    }));
+                
+                // Classify genres
+                analyzedPlaylist = originalPlaylist.map(song => ({
+                    ...song,
+                    genre: classifyGenre(song)
+                }));
+                
+                displayAnalysis();
+                hideLoading();
+                document.getElementById('resultsSection').classList.remove('hidden');
+                
+            } catch (error) {
+                hideLoading();
+                console.error('Failed to analyze playlist:', error);
+                showError('Failed to analyze playlist. Please try again.');
+            }
+        }
+
+        function toggleManualInput() {
+            const manualSection = document.getElementById('manualInputSection');
+            manualSection.classList.toggle('hidden');
+        }
+
+        function analyzeManualPlaylist() {
+            const input = document.getElementById('playlistInput').value.trim();
+            
+            if (!input) {
+                showError('Please enter some playlist data!');
+                return;
+            }
+
+            showLoading('Analyzing playlist...');
+
+            setTimeout(() => {
+                try {
+                    originalPlaylist = parsePlaylistInput(input);
+                    analyzedPlaylist = originalPlaylist.map(song => ({
+                        ...song,
+                        genre: classifyGenre(song)
+                    }));
+
+                    displayAnalysis();
+                    hideLoading();
+                    document.getElementById('resultsSection').classList.remove('hidden');
+                } catch (error) {
+                    hideLoading();
+                    showError('Error parsing playlist data. Please check the format and try again.');
+                    console.error(error);
+                }
+            }, 1500);
+        }
+
+        function parsePlaylistInput(input) {
+            try {
+                const jsonData = JSON.parse(input);
+                return jsonData.map(song => ({
+                    name: song.name || song.title || 'Unknown',
+                    artist: song.artist || 'Unknown Artist',
+                    album: song.album || 'Unknown Album',
+                    year: song.year || song.release_year || Math.floor(Math.random() * 30) + 1995
+                }));
+            } catch (e) {
+                const lines = input.split('\n').filter(line => line.trim());
+                return lines.map(line => {
+                    const parts = line.split(' - ');
+                    return {
+                        name: parts[0] || line,
+                        artist: parts[1] || 'Unknown Artist',
+                        album: parts[2] || 'Unknown Album',
+                        year: Math.floor(Math.random() * 30) + 1995
+                    };
+                });
+            }
+        }
+
+        function classifyGenre(song) {
+            const searchText = `${song.name} ${song.artist} ${song.album || ''}`.toLowerCase();
+            
+            for (const [genre, keywords] of Object.entries(genreKeywords)) {
+                if (keywords.some(keyword => searchText.includes(keyword))) {
+                    return genre;
+                }
+            }
+            
+            if (song.year > 2010) return 'Pop';
+            if (song.year > 2000) return 'Rock';
+            if (song.year > 1990) return 'Alternative';
+            if (song.year > 1980) return 'Classic Rock';
+            return 'Oldies';
+        }
+
+        function displayAnalysis() {
+            const totalSongs = analyzedPlaylist.length;
+            const genres = [...new Set(analyzedPlaylist.map(song => song.genre))];
+            const years = analyzedPlaylist.map(song => song.year);
+            const minYear = Math.min(...years);
+            const maxYear = Math.max(...years);
+            const avgYear = Math.round(years.reduce((a, b) => a + b, 0) / years.length);
+
+            // Update stats
+            document.getElementById('totalSongs').textContent = totalSongs;
+            document.getElementById('totalGenres').textContent = genres.length;
+            document.getElementById('yearRange').textContent = `${minYear} - ${maxYear}`;
+            document.getElementById('avgYear').textContent = avgYear;
+
+            // Populate filter dropdowns
+            const genreFilter = document.getElementById('genreFilter');
+            const yearFilter = document.getElementById('yearFilter');
+            
+            genreFilter.innerHTML = '<option value="">All Genres</option>';
+            genres.sort().forEach(genre => {
+                const option = document.createElement('option');
+                option.value = genre;
+                option.textContent = genre;
+                genreFilter.appendChild(option);
+            });
+
+            yearFilter.innerHTML = '<option value="">All Years</option>';
+            [...new Set(years)].sort((a, b) => b - a).forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearFilter.appendChild(option);
+            });
+
+            // Set year range inputs
+            document.getElementById('yearRangeStart').value = minYear;
+            document.getElementById('yearRangeEnd').value = maxYear;
+
+            displaySongs(analyzedPlaylist);
+        }
+
+        function displaySongs(songs) {
+            const songList = document.getElementById('songList');
+            songList.innerHTML = '';
+
+            if (songs.length === 0) {
+                songList.innerHTML = '<div class="song-item"><p>No songs match the current filters.</p></div>';
+                return;
+            }
+
+            songs.forEach(song => {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+                songItem.innerHTML = `
+                    <div class="song-artwork" style="${song.image ? `background-image: url(${song.image})` : ''}">
+                        ${!song.image ? '🎵' : ''}
+                    </div>
+                    <div class="song-info">
+                        <div class="song-title">${song.name}</div>
+                        <div class="song-details">
+                            ${song.artist} • ${song.album} • ${song.year}
+                            <span class="genre-tag">${song.genre}</span>
+                        </div>
+                    </div>
+                `;
+                songList.appendChild(songItem);
+            });
+        }
+
+        function filterPlaylist() {
+            const genreFilter = document.getElementById('genreFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+            const yearStart = parseInt(document.getElementById('yearRangeStart').value) || 0;
+            const yearEnd = parseInt(document.getElementById('yearRangeEnd').value) || 9999;
+
+            let filtered = analyzedPlaylist;
+
+            if (genreFilter) {
+                filtered = filtered.filter(song => song.genre === genreFilter);
+            }
+
+            if (yearFilter) {
+                filtered = filtered.filter(song => song.year == yearFilter);
+            }
+
+            filtered = filtered.filter(song => song.year >= yearStart && song.year <= yearEnd);
+
+            displaySongs(filtered);
+            filteredPlaylist = filtered;
+        }
+
+        function createFilteredPlaylist() {
+            filterPlaylist();
+            
+            if (filteredPlaylist.length === 0) {
+                showError('No songs match the current filters!');
+                return;
+            }
+
+            const filteredSection = document.getElementById('filteredPlaylistSection');
+            const filteredSongList = document.getElementById('filteredSongList');
+            
+            filteredSongList.innerHTML = '';
+            
+            filteredPlaylist.forEach((song, index) => {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+                songItem.innerHTML = `
+                    <div class="song-artwork" style="${song.image ? `background-image: url(${song.image})` : ''}">
+                        ${!song.image ? '🎵' : ''}
+                    </div>
+                    <div class="song-info">
+                        <div class="song-title">${index + 1}. ${song.name}</div>
+                        <div class="song-details">
+                            ${song.artist} • ${song.album} • ${song.year}
+                            <span class="genre-tag">${song.genre}</span>
+                        </div>
+                    </div>
+                `;
+                filteredSongList.appendChild(songItem);
+            });
+
+            filteredSection.classList.remove('hidden');
+            filteredSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function saveToSpotify() {
+            if (!accessToken) {
+                showError('Please login to Spotify first');
+                return;
+            }
+
+            if (analyzedPlaylist.length === 0) {
+                showError('No playlist to save');
+                return;
+            }
+
+            const playlistName = prompt('Enter a name for your playlist:', 'Analyzed Playlist');
+            if (!playlistName) return;
+
+            try {
+                showLoading('Creating playlist on Spotify...');
+                
+                // Create playlist
+                const playlist = await makeSpotifyRequest(`/users/${currentUser.id}/playlists`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: playlistName,
+                        description: 'Created with Spotify Playlist Analyzer',
+                        public: false
+                    })
+                });
+
+                if (playlist) {
+                    // Add tracks to playlist
+                    const trackUris = analyzedPlaylist
+                        .filter(song => song.uri)
+                        .map(song => song.uri);
+                    
+                    if (trackUris.length > 0) {
+                        // Spotify allows max 100 tracks per request
+                        for (let i = 0; i < trackUris.length; i += 100) {
+                            const batch = trackUris.slice(i, i + 100);
+                            await makeSpotifyRequest(`/playlists/${playlist.id}/tracks`, {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                    uris: batch
+                                })
+                            });
+                        }
+                        
+                        showSuccess(`Playlist "${playlistName}" created successfully on Spotify!`);
+                    } else {
+                        showError('No Spotify tracks found to add to playlist');
+                    }
+                }
+                
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                console.error('Failed to save playlist to Spotify:', error);
+                showError('Failed to save playlist to Spotify. Please try again.');
+            }
+        }
+
+        async function saveFilteredToSpotify() {
+            if (!accessToken) {
+                showError('Please login to Spotify first');
+                return;
+            }
+
+            if (filteredPlaylist.length === 0) {
+                showError('No filtered playlist to save');
+                return;
+            }
+
+            const playlistName = prompt('Enter a name for your filtered playlist:', 'Filtered Playlist');
+            if (!playlistName) return;
+
+            try {
+                showLoading('Creating filtered playlist on Spotify...');
+                
+                const playlist = await makeSpotifyRequest(`/users/${currentUser.id}/playlists`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: playlistName,
+                        description: 'Filtered playlist created with Spotify Playlist Analyzer',
+                        public: false
+                    })
+                });
+
+                if (playlist) {
+                    const trackUris = filteredPlaylist
+                        .filter(song => song.uri)
+                        .map(song => song.uri);
+                    
+                    if (trackUris.length > 0) {
+                        for (let i = 0; i < trackUris.length; i += 100) {
+                            const batch = trackUris.slice(i, i + 100);
+                            await makeSpotifyRequest(`/playlists/${playlist.id}/tracks`, {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                    uris: batch
+                                })
+                            });
+                        }
+                        
+                        showSuccess(`Filtered playlist "${playlistName}" created successfully on Spotify!`);
+                    } else {
+                        showError('No Spotify tracks found to add to playlist');
+                    }
+                }
+                
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                console.error('Failed to save filtered playlist to Spotify:', error);
+                showError('Failed to save filtered playlist to Spotify. Please try again.');
+            }
+        }
+
+        function downloadPlaylist() {
+            if (filteredPlaylist.length === 0) {
+                showError('No filtered playlist to download!');
+                return;
+            }
+
+            const playlistData = {
+                name: `Filtered Playlist - ${new Date().toISOString().split('T')[0]}`,
+                description: `Generated by Spotify Playlist Analyzer`,
+                songs: filteredPlaylist,
+                stats: {
+                    totalSongs: filteredPlaylist.length,
+                    genres: [...new Set(filteredPlaylist.map(song => song.genre))],
+                    yearRange: {
+                        min: Math.min(...filteredPlaylist.map(song => song.year)),
+                        max: Math.max(...filteredPlaylist.map(song => song.year))
+                    }
+                }
+            };
+
+            const dataStr = JSON.stringify(playlistData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `filtered-playlist-${Date.now()}.json`;
+            link.click();
+        }
+
+        function logout() {
+            accessToken = '';
+            currentUser = null;
+            localStorage.removeItem('spotify_access_token');
+            
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('userSection').classList.add('hidden');
+            document.getElementById('playlistSection').classList.add('hidden');
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('filteredPlaylistSection').classList.add('hidden');
+        }
+
+        // Utility functions
+        function showLoading(message = 'Loading...') {
+            document.getElementById('loadingSection').classList.remove('hidden');
+            document.querySelector('#loadingSection p').textContent = message;
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingSection').classList.add('hidden');
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            
+            const container = document.querySelector('.container');
+            const firstChild = container.firstElementChild.nextElementSibling;
+            container.insertBefore(errorDiv, firstChild);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success';
+            successDiv.textContent = message;
+            
+            const container = document.querySelector('.container');
+            const firstChild = container.firstElementChild.nextElementSibling;
+            container.insertBefore(successDiv, firstChild);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 5000);
+        }
+
+        // Sample data for testing
+        function loadSampleData() {
+            const sampleData = [
+                {"name": "Blinding Lights", "artist": "The Weeknd", "album": "After Hours", "year": 2020},
+                {"name": "Shape of You", "artist": "Ed Sheeran", "album": "÷", "year": 2017},
+                {"name": "Someone Like You", "artist": "Adele", "album": "21", "year": 2011},
+                {"name": "Uptown Funk", "artist": "Mark Ronson ft. Bruno Mars", "album": "Uptown Special", "year": 2014},
+                {"name": "Bohemian Rhapsody", "artist": "Queen", "album": "A Night at the Opera", "year": 1975},
+                {"name": "Hotel California", "artist": "Eagles", "album": "Hotel California", "year": 1976},
+                {"name": "Billie Jean", "artist": "Michael Jackson", "album": "Thriller", "year": 1982},
+                {"name": "Smells Like Teen Spirit", "artist": "Nirvana", "album": "Nevermind", "year": 1991},
+                {"name": "Hey Ya!", "artist": "OutKast", "album": "Speakerboxxx/The Love Below", "year": 2003},
+                {"name": "Rolling in the Deep", "artist": "Adele", "album": "21", "year": 2011}
+            ];
+            
+            document.getElementById('playlistInput').value = JSON.stringify(sampleData, null, 2);
+        }
+    </script>
+</body>
+</html>
