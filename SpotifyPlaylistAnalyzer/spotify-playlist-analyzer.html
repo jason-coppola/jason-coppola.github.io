@@ -406,11 +406,16 @@
             <ol>
                 <li>Go to <a href="https://developer.spotify.com/dashboard" target="_blank">Spotify Developer Dashboard</a></li>
                 <li>Click "Create App" and fill in the details</li>
-                <li>Set redirect URI to: <strong><span id="currentUrl"></span></strong></li>
+                <li><strong>Important:</strong> Set Web API settings as follows:
+                    <ul>
+                        <li>Redirect URI: <strong><span id="currentUrl"></span></strong></li>
+                        <li>Check "Web Playback SDK" if available</li>
+                    </ul>
+                </li>
                 <li>Copy your Client ID and paste it below</li>
-                <li>Make sure your app is in "Development Mode" for testing</li>
+                <li><strong>Note:</strong> Your app will work in Development Mode (up to 25 users)</li>
             </ol>
-            <p><strong>Important:</strong> This tool uses the Spotify Implicit Grant flow, so no backend server is required!</p>
+            <p><strong>Alternative:</strong> If you're having issues with authentication, you can use the manual input option below to test the tool with sample data.</p>
         </div>
 
         <div class="input-group">
@@ -426,6 +431,11 @@
                 <button class="spotify-login-btn" onclick="loginToSpotify()" disabled>
                     🎵 Connect Spotify Account
                 </button>
+                <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">
+                    <strong>Having trouble connecting?</strong> You can still use all features with the 
+                    <button class="btn btn-secondary" onclick="document.getElementById('playlistSection').classList.remove('hidden'); document.getElementById('manualInputSection').classList.remove('hidden');" style="padding: 4px 8px; font-size: 0.8rem; margin: 0 4px;">Manual Input</button> 
+                    option below, or try our sample data!
+                </p>
             </div>
 
             <div id="userSection" class="hidden">
@@ -569,32 +579,59 @@
             // Display current URL for setup instructions
             document.getElementById('currentUrl').textContent = window.location.origin + window.location.pathname;
             
-            // Check if we're returning from Spotify authorization (implicit flow)
+            // Check if we're returning from Spotify authorization
+            const urlParams = new URLSearchParams(window.location.search);
             const hash = window.location.hash.substring(1);
-            const params = new URLSearchParams(hash);
-            const token = params.get('access_token');
-            const error = params.get('error');
+            const hashParams = new URLSearchParams(hash);
             
-            if (token) {
+            // Check for implicit flow response (token in hash)
+            const token = hashParams.get('access_token');
+            const hashError = hashParams.get('error');
+            const hashState = hashParams.get('state');
+            
+            // Check for authorization code flow response (code in query params)
+            const code = urlParams.get('code');
+            const queryError = urlParams.get('error');
+            const queryState = urlParams.get('state');
+            
+            const savedState = localStorage.getItem('spotify_auth_state');
+            const authMethod = localStorage.getItem('spotify_auth_method');
+            
+            if (token && hashState === savedState) {
+                // Implicit flow success
                 accessToken = token;
-                const expiresIn = params.get('expires_in');
+                const expiresIn = hashParams.get('expires_in');
                 
-                // Store token with expiration time
                 localStorage.setItem('spotify_access_token', token);
                 if (expiresIn) {
                     const expirationTime = Date.now() + (parseInt(expiresIn) * 1000);
                     localStorage.setItem('spotify_token_expiry', expirationTime.toString());
                 }
                 
-                // Clear the hash from URL
+                // Clear the hash and cleanup
                 window.history.replaceState({}, document.title, window.location.pathname);
+                localStorage.removeItem('spotify_auth_state');
+                localStorage.removeItem('spotify_auth_method');
                 
-                // Load user profile
                 loadUserProfile();
-            } else if (error) {
-                showError('Spotify authorization failed: ' + error);
-                // Clear the hash from URL
+                
+            } else if (code && queryState === savedState) {
+                // Authorization code flow - show instructions for manual token extraction
+                showAuthCodeInstructions(code);
+                
+            } else if (hashError || queryError) {
+                const error = hashError || queryError;
+                if (error === 'unsupported_response_type' && authMethod === 'implicit') {
+                    // Implicit flow not supported, try authorization code flow
+                    showRetryMessage();
+                } else {
+                    showError('Spotify authorization failed: ' + error);
+                }
+                
+                // Clear the URL
                 window.history.replaceState({}, document.title, window.location.pathname);
+                localStorage.removeItem('spotify_auth_state');
+                localStorage.removeItem('spotify_auth_method');
             }
             
             // Load saved client ID
@@ -618,6 +655,48 @@
                 localStorage.removeItem('spotify_token_expiry');
             }
         });
+        
+        function showRetryMessage() {
+            const retryDiv = document.createElement('div');
+            retryDiv.className = 'setup-instructions';
+            retryDiv.innerHTML = `
+                <h3>🔄 Authentication Method Not Supported</h3>
+                <p>Your Spotify app doesn't support the implicit flow. Let's try the authorization code flow:</p>
+                <button class="btn" onclick="retryWithAuthCode()">Try Authorization Code Flow</button>
+                <p style="margin-top: 10px;"><em>Or use the manual input option below to test with sample data.</em></p>
+            `;
+            
+            const container = document.querySelector('.container');
+            const authSection = document.getElementById('authSection');
+            container.insertBefore(retryDiv, authSection);
+            
+            setTimeout(() => {
+                retryDiv.remove();
+            }, 10000);
+        }
+        
+        function showAuthCodeInstructions(code) {
+            const instructionsDiv = document.createElement('div');
+            instructionsDiv.className = 'setup-instructions';
+            instructionsDiv.innerHTML = `
+                <h3>🔑 Authorization Code Received</h3>
+                <p>Due to browser security limitations, we cannot automatically exchange the authorization code for an access token. You have two options:</p>
+                <ol>
+                    <li><strong>Use Manual Input:</strong> Click "Manual Input" below and paste your playlist data</li>
+                    <li><strong>Set up a backend:</strong> Use the authorization code: <code style="background: #f0f0f0; padding: 2px 4px;">${code}</code></li>
+                </ol>
+                <button class="btn" onclick="this.parentElement.remove(); toggleManualInput();">Use Manual Input Instead</button>
+            `;
+            
+            const container = document.querySelector('.container');
+            const authSection = document.getElementById('authSection');
+            container.insertBefore(instructionsDiv, authSection);
+            
+            // Clear the URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+            localStorage.removeItem('spotify_auth_state');
+            localStorage.removeItem('spotify_auth_method');
+        }
 
         function saveClientId() {
             const clientId = document.getElementById('clientId').value.trim();
@@ -638,14 +717,55 @@
                 return;
             }
             
+            // Try the Web Playbook SDK approach first, then fall back to PKCE flow
             const scope = 'playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-read-private user-read-email';
             
-            // Use implicit grant flow (response_type=token)
+            // Generate state for security
+            const state = generateRandomString(16);
+            localStorage.setItem('spotify_auth_state', state);
+            
+            // Try implicit flow first (works for some app configurations)
             const authUrl = `https://accounts.spotify.com/authorize?` +
                 `client_id=${CLIENT_ID}&` +
                 `response_type=token&` +
                 `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
                 `scope=${encodeURIComponent(scope)}&` +
+                `state=${state}&` +
+                `show_dialog=true`;
+            
+            // Store the current attempt method
+            localStorage.setItem('spotify_auth_method', 'implicit');
+            
+            window.location.href = authUrl;
+        }
+        
+        function generateRandomString(length) {
+            const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let text = '';
+            for (let i = 0; i < length; i++) {
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            return text;
+        }
+        
+        function retryWithAuthCode() {
+            if (!CLIENT_ID) {
+                showError('Please set your Spotify Client ID first');
+                return;
+            }
+            
+            const scope = 'playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-read-private user-read-email';
+            const state = generateRandomString(16);
+            localStorage.setItem('spotify_auth_state', state);
+            localStorage.setItem('spotify_auth_method', 'code');
+            
+            // Use authorization code flow (more widely supported)
+            const authUrl = `https://accounts.spotify.com/authorize?` +
+                `client_id=${CLIENT_ID}&` +
+                `response_type=code&` +
+                `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
+                `scope=${encodeURIComponent(scope)}&` +
+                `state=${state}&` +
                 `show_dialog=true`;
             
             window.location.href = authUrl;
