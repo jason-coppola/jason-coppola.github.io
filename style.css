@@ -639,8 +639,8 @@ body.loaded {
   transition-delay: 0.4s;
 }
 
-/* Data set animation */
-.data-set li {
+/* Data set animation - only apply when parent section is animated */
+.animate-section:not(.animated) .data-set li {
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.6s ease, transform 0.6s ease;
@@ -728,6 +728,8 @@ body.loaded {
 .data-set li {
   display: inline-block;
   flex: 1;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
 
 .data-set .data-value {
