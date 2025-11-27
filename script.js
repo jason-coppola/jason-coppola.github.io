@@ -100,6 +100,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize menu toggle
     initMenuToggle();
     
+    // Nav logo links - scroll to top
+    document.querySelectorAll('.nav-logo-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            
+            // Track logo click for analytics
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'logo_click', {
+                    'event_category': 'Navigation',
+                    'event_label': 'Scroll to top'
+                });
+            }
+        });
+    });
+    
     // Premium Section Animation System
     function initSectionAnimations() {
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

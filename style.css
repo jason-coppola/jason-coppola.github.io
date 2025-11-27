@@ -337,6 +337,22 @@ nav h1 {
   font-weight: normal;
 }
 
+nav h1 a.nav-logo-link {
+  color: #101010;
+  text-decoration: none;
+  transition: color 0.3s ease, opacity 0.3s ease;
+  display: inline-block;
+}
+
+nav h1 a.nav-logo-link:hover {
+  color: #a1a1a1;
+  opacity: 0.8;
+}
+
+nav h1 a.nav-logo-link:active {
+  opacity: 0.6;
+}
+
 nav h2 {
   font-size: 1em;
   width: 50%;
