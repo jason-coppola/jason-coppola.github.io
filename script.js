@@ -9,7 +9,141 @@ AOS.init({
   disable: 'mobile' // Disable on mobile for better performance
 });
 
+// Page load animation
+window.addEventListener('load', () => {
+    document.body.classList.add('loaded');
+    document.body.classList.remove('loading');
+});
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Add loading class initially
+    document.body.classList.add('loading');
+    // Initialize Menu Toggle Functionality
+    function initMenuToggle() {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuItems = document.querySelectorAll('.staggered-item');
+        
+        if (!menuToggle || !menuOverlay) return;
+        
+        let isMenuOpen = false;
+        
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            menuToggle.setAttribute('aria-expanded', isMenuOpen);
+            menuOverlay.classList.toggle('active');
+            
+            // Prevent body scroll when menu is open
+            if (isMenuOpen) {
+                document.body.style.overflow = 'hidden';
+                // Animate menu items when menu opens
+                animateMenuItems();
+            } else {
+                document.body.style.overflow = '';
+                // Reset menu items for next opening
+                menuItems.forEach(item => {
+                    item.classList.remove('visible');
+                });
+            }
+        }
+        
+        function animateMenuItems() {
+            // Check for reduced motion preference
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            
+            if (prefersReducedMotion) {
+                // Show all items immediately if reduced motion is preferred
+                menuItems.forEach(item => {
+                    item.classList.add('visible');
+                });
+            } else {
+                // Animate items with staggered delay - start after overlay animation begins
+                menuItems.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.classList.add('visible');
+                    }, 150 + (index * 80)); // 150ms initial delay + 80ms between items
+                });
+            }
+        }
+        
+        // Toggle menu on button click
+        menuToggle.addEventListener('click', toggleMenu);
+        
+        // Close menu when clicking outside the menu overlay
+        document.addEventListener('click', (e) => {
+            if (isMenuOpen && !menuOverlay.contains(e.target) && !menuToggle.contains(e.target)) {
+                toggleMenu();
+            }
+        });
+        
+        // Close menu when clicking on a menu link
+        menuItems.forEach(item => {
+            const link = item.querySelector('a');
+            if (link) {
+                link.addEventListener('click', () => {
+                    // Only close if it's an internal link
+                    if (link.getAttribute('href').startsWith('#')) {
+                        toggleMenu();
+                    }
+                });
+            }
+        });
+        
+        // Close menu on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isMenuOpen) {
+                toggleMenu();
+            }
+        });
+    }
+    
+    // Initialize menu toggle
+    initMenuToggle();
+    
+    // Premium Section Animation System
+    function initSectionAnimations() {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        // If reduced motion, show all sections immediately
+        if (prefersReducedMotion) {
+            document.querySelectorAll('.animate-section').forEach(section => {
+                section.classList.add('animated');
+            });
+            return;
+        }
+        
+        // Create Intersection Observer for sections
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                    // Unobserve after animation to prevent re-triggering
+                    sectionObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.15, // Trigger when 15% of section is visible
+            rootMargin: '0px 0px -50px 0px' // Start animation slightly before section enters viewport
+        });
+        
+        // Observe all sections with animate-section class
+        document.querySelectorAll('.animate-section').forEach(section => {
+            sectionObserver.observe(section);
+        });
+        
+        // Animate intro section immediately on load (already visible)
+        const introSection = document.querySelector('#intro');
+        if (introSection) {
+            // Small delay to ensure page is loaded
+            setTimeout(() => {
+                introSection.classList.add('animated');
+            }, 300);
+        }
+    }
+    
+    // Initialize section animations
+    initSectionAnimations();
+    
     // Smooth scrolling for navigation links with enhanced tracking
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -29,27 +163,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Enhanced fade-in animation for sections
-    const observer = new IntersectionObserver((entries) => {
+    // Track section views for analytics (separate from animations)
+    const analyticsObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in');
-                
+            if (entry.isIntersecting && entry.target.id) {
                 // Track visible sections for engagement metrics
-                if (typeof gtag !== 'undefined' && entry.target.id) {
+                if (typeof gtag !== 'undefined') {
                     gtag('event', 'section_view', {
                         'event_category': 'Content Engagement',
                         'event_label': `Viewed: ${entry.target.id} section`
                     });
                 }
+                // Unobserve after tracking to prevent duplicate events
+                analyticsObserver.unobserve(entry.target);
             }
         });
     }, {
-        threshold: 0.2 // Trigger when 20% of the element is visible
+        threshold: 0.3 // Trigger when 30% of the element is visible
     });
 
-    document.querySelectorAll('section').forEach((section) => {
-        observer.observe(section);
+    // Observe all sections for analytics
+    document.querySelectorAll('section[id]').forEach((section) => {
+        analyticsObserver.observe(section);
     });
 
     // Implement lazy loading for images (SEO improvement #9)
