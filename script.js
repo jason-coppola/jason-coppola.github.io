@@ -94,14 +94,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         
-        // Close menu when clicking on a menu link - close immediately for snappier feel
+        // Close menu when clicking on a menu link - ensure scroll happens after layout stabilizes
         menuItems.forEach(item => {
             const link = item.querySelector('a');
             if (link) {
                 link.addEventListener('click', (e) => {
                     // Only close if it's an internal link
                     if (link.getAttribute('href').startsWith('#')) {
-                        // Close menu immediately without waiting
+                        e.preventDefault();
+                        e.stopPropagation(); // Prevent general anchor handler from also firing
+                        
+                        const targetId = link.getAttribute('href');
+                        
+                        // Close menu immediately
                         isMenuOpen = false;
                         menuToggle.setAttribute('aria-expanded', 'false');
                         menuOverlay.classList.remove('active');
@@ -110,6 +115,30 @@ document.addEventListener('DOMContentLoaded', () => {
                         menuItems.forEach(item => {
                             item.classList.remove('visible');
                         });
+                        
+                        // Wait for menu close animation (300ms) and layout to stabilize before scrolling
+                        // This ensures accurate scroll position calculation
+                        setTimeout(() => {
+                            requestAnimationFrame(() => {
+                                const targetElement = document.querySelector(targetId);
+                                if (targetElement) {
+                                    // Use scrollIntoView which respects CSS scroll-margin-top
+                                    // This is more reliable than manual position calculation
+                                    targetElement.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'start'
+                                    });
+                                    
+                                    // Track navigation for analytics
+                                    if (typeof gtag !== 'undefined') {
+                                        gtag('event', 'internal_navigation', {
+                                            'event_category': 'Internal Links',
+                                            'event_label': `Clicked: ${targetId}`
+                                        });
+                                    }
+                                }
+                            });
+                        }, 350); // Wait 350ms for menu animation (300ms) + small buffer
                     }
                 });
             }
@@ -131,29 +160,36 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetElement = document.querySelector(target);
         if (!targetElement) return;
         
-        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 80;
-        const startPosition = window.pageYOffset;
-        const distance = targetPosition - startPosition;
-        let startTime = null;
+        // Calculate nav height dynamically for accurate offset
+        const nav = document.querySelector('nav');
+        const navHeight = nav ? nav.offsetHeight : 80;
         
-        function easeInOutCubic(t) {
-            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-        }
-        
-        function animation(currentTime) {
-            if (startTime === null) startTime = currentTime;
-            const timeElapsed = currentTime - startTime;
-            const progress = Math.min(timeElapsed / duration, 1);
-            const ease = easeInOutCubic(progress);
+        // Use requestAnimationFrame to ensure layout is stable before calculating position
+        requestAnimationFrame(() => {
+            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight;
+            const startPosition = window.pageYOffset;
+            const distance = targetPosition - startPosition;
+            let startTime = null;
             
-            window.scrollTo(0, startPosition + distance * ease);
-            
-            if (timeElapsed < duration) {
-                requestAnimationFrame(animation);
+            function easeInOutCubic(t) {
+                return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
             }
-        }
-        
-        requestAnimationFrame(animation);
+            
+            function animation(currentTime) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1);
+                const ease = easeInOutCubic(progress);
+                
+                window.scrollTo(0, startPosition + distance * ease);
+                
+                if (timeElapsed < duration) {
+                    requestAnimationFrame(animation);
+                }
+            }
+            
+            requestAnimationFrame(animation);
+        });
     }
     
     // Enhanced smooth scrolling for navigation links - faster for snappier feel

@@ -124,7 +124,7 @@ nav {
   -webkit-backdrop-filter: blur(20px);
   display: flex;
   padding: 24px 20px;
-  gap: 40px;
+  justify-content: space-between;
   box-sizing: border-box;
   z-index: 100; /* Ensure navigation appears above other elements */
   align-items: center;
@@ -152,7 +152,7 @@ nav h1:first-of-type {
 }
 
 nav h1:last-of-type {
-  flex: 1;
+  flex: 0 0 auto;
 }
 
 /* Menu Toggle Button */
@@ -166,7 +166,7 @@ nav h1:last-of-type {
   justify-content: center;
   z-index: 101;
   position: relative;
-  margin-left: auto;
+  flex: 0 0 auto;
   border-radius: 8px;
   transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -316,6 +316,14 @@ nav h1:last-of-type {
 
 /* Extra padding for very small screens where nav might be taller */
 @media screen and (max-width: 480px) {
+  nav {
+    padding: 16px 12px;
+  }
+  
+  nav h1 {
+    font-size: 0.85em;
+  }
+  
   .menu-nav {
     padding-top: 160px;
   }
@@ -458,7 +466,6 @@ hr::after {
 /* Design */
 nav h1 {
   font-size: 1em;
-  width: 50%;
   font-weight: normal;
 }
 
@@ -1084,11 +1091,19 @@ footer {
 #background,
 #publications,
 #speaker {
-  scroll-margin-top: 56px;
+  scroll-margin-top: 100px;
 }
 
 /* Mobile Optimization Enhancements - for SEO improvement #8 */
 @media screen and (max-width: 768px) {
+  nav {
+    padding: 20px 16px;
+  }
+  
+  nav h1 {
+    font-size: 0.9em;
+  }
+  
   .grid {
     display: block;
     max-width: 100%;
