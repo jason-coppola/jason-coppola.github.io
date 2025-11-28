@@ -1,6 +1,14 @@
 <!DOCTYPE html>
+<!--
+  Portfolio Website - Jason Coppola
+  Product Management Executive | Streaming Media Expert
+  
+  This site showcases professional experience, achievements, and publications.
+  Optimized for performance, SEO, and accessibility.
+-->
 <html lang="en">
   <head>
+    <!-- Google Analytics - Performance tracking -->
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YRN7DPL326"></script>
     <script>
@@ -10,48 +18,57 @@
     
       gtag('config', 'G-YRN7DPL326');
     </script>
+    <!-- Meta tags - SEO and viewport settings -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jason Coppola | Product Management Executive | Streaming Media Expert</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- DNS prefetch - Performance optimization for external resources -->
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://unpkg.com">
-    <!-- Critical inline script for immediate interactivity -->
+    
+    <!-- Critical inline script - Prevents layout shift on page load -->
     <script>
       // Prevent layout shift by ensuring body is visible immediately
       document.documentElement.style.visibility = 'visible';
     </script>
-    <!-- Enhanced Meta Tags (#1) -->
+    <!-- SEO Meta Tags - Description, keywords, and robots directives -->
     <meta name="description" content="Product Management Executive with 15+ years experience launching major streaming platforms including Disney+, Paramount+, HBO MAX, and HBO NOW. Expertise in streaming media, digital transformation, and global market expansion.">
     <meta name="keywords" content="Jason Coppola, Product Manager, Streaming Media, Disney+, Paramount+, HBO MAX, Digital Media Executive, Product Management, CW, WarnerMedia">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Jason Coppola">
-    <!-- Language specification -->
-    <link rel="alternate" hreflang="en" href="https://www.jasoncoppola.bio">
     
-    <!-- Canonical URL (#2) -->
+    <!-- Language and canonical URL - SEO optimization -->
+    <link rel="alternate" hreflang="en" href="https://www.jasoncoppola.bio">
     <link rel="canonical" href="https://www.jasoncoppola.bio">
 
-    <!-- Social Media Meta Tags -->
+    <!-- Open Graph Meta Tags - Social media sharing optimization -->
     <meta property="og:title" content="Jason Coppola | Product Management Executive">
     <meta property="og:description" content="As a transformative Product Management Executive with 15+ years at the forefront of streaming innovation, I have architected and launched several of the industry's most significant platforms including Disney+ Basic, Paramount+, HBO MAX, and HBO NOW. My strategic leadership has driven massive user growth across multiple streaming services, including Disney's 220M+ subscriber portfolio and Paramount+'s expansion into 20+ global markets. I have consistently delivered breakthrough results by spearheading multimillion-dollar distribution partnerships, optimizing digital products for revenue growth, and building high-performing teams across technical and business operations. My unique blend of commercial and technical expertise has enabled me to drive digital transformation at leading media companies, resulting in enhanced user experiences, reduced churn, and accelerated revenue growth through both subscription and ad-supported models. As an early pioneer in streaming media, I have repeatedly demonstrated the ability to identify market opportunities, launch innovative products, and scale operations across global markets.">
     <meta property="og:image" content="https://github.com/jason-coppola/jason-coppola.github.io/blob/f9d3c9bd33b035cdca42df55df9798b333602ab2/profile-image2.JPG?raw=true">
     <meta property="og:url" content="https://www.jasoncoppola.bio">
     <meta property="og:type" content="website">
     
-    <!-- Twitter Card Meta Tags (#10) -->
+    <!-- Twitter Card Meta Tags - Twitter sharing optimization -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Jason Coppola - Product Management Executive">
     <meta name="twitter:description" content="Product Management Executive with 15+ years experience launching major streaming platforms including Disney+, Paramount+, HBO MAX, and HBO NOW.">
     <meta name="twitter:image" content="https://github.com/jason-coppola/jason-coppola.github.io/blob/f9d3c9bd33b035cdca42df55df9798b333602ab2/profile-image2.JPG?raw=true">
 
+    <!-- Font preconnect - Performance optimization for Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Main stylesheet -->
     <link rel="stylesheet" href="style.css">
   </head>
   
   <body>
+    <!-- ====================================================
+         NAVIGATION - Fixed header with menu toggle
+         ==================================================== -->
     <nav>
       <h1><a href="#" class="nav-logo-link">Jason Coppola</a></h1>
       <h1><a href="#" class="nav-logo-link">Product Executive</a></h1>
@@ -64,7 +81,7 @@
       </button>
     </nav>
 
-    <!-- Expandable Menu Overlay -->
+    <!-- Expandable Menu Overlay - Slide-out navigation panel -->
     <div class="menu-overlay" id="menuOverlay">
       <nav class="menu-nav">
         <ul class="staggered-menu">
@@ -77,6 +94,9 @@
       </nav>
     </div>
 
+    <!-- ====================================================
+         INTRO SECTION - Hero section with headline
+         ==================================================== -->
     <section id="intro">
       <div class="grid content-wrapper">
         <div class="col-12 intro-container">
@@ -86,6 +106,9 @@
       </div>
     </section>
 
+    <!-- ====================================================
+         ACHIEVEMENTS SECTION - Professional experience highlights
+         ==================================================== -->
     <section id="achievements" class="black animate-section">
       <div class="grid content-wrapper">
         <div class="col-6 start animate-item">
@@ -123,6 +146,7 @@
       </div>
     </section>
 
+    <!-- Disney Experience Section -->
     <section class="gray animate-section">
       <div class="grid content-wrapper">
         <div class="col-6 start">
@@ -148,6 +172,7 @@
       </div>
     </section>
 
+    <!-- Paramount Experience Section -->
     <section class="black animate-section">
       <div class="grid content-wrapper">
         <div class="col-6 start">
@@ -173,7 +198,8 @@
       </div>
     </section>
 
-  <section class="gray animate-section">
+    <!-- WarnerMedia Experience Section -->
+    <section class="gray animate-section">
       <div class="grid content-wrapper">
         <div class="col-6 start">
           <img class="logo" src="./images/WarnerMedia_Logo.svg" alt="WarnerMedia Logo - Media conglomerate where Jason Coppola led product initiatives for HBO MAX" loading="lazy" />
@@ -196,6 +222,7 @@
       </div>
     </section>
 
+    <!-- HBO Experience Section -->
     <section class="black animate-section">
       <div class="grid content-wrapper">
         <div class="col-6 start">
@@ -223,6 +250,9 @@
       </div>
     </section>
 
+    <!-- ====================================================
+         BACKGROUND SECTION - Professional background story
+         ==================================================== -->
     <section id="background">
       <div class="grid content-wrapper">
         <div class="col-6 start">
@@ -238,7 +268,7 @@
           <h3>The HBO Revolution: From GO to NOW</h3>
           <p>At HBO, Jason quickly distinguished himself as a forward-thinking product leader. As Manager of Product Development, he pioneered mobile-first features and second-screen experiences that would become industry standards. But it was the launch of HBO NOW, the company&rsquo;s first standalone streaming service, that truly showcased his ability to navigate uncharted territory. Leading a cross-functional team, Jason orchestrated the service&rsquo;s deployment across major platforms like Apple, Android, Amazon, and Roku, helping HBO break free from traditional cable dependencies.</p>
 
-          <p>His innovative spirit didn&rsquo;t stop there. As Director of Global Distribution, he pushed boundaries by developing groundbreaking virtual reality experiences for hit shows like Westworld and Game of Thrones</a>, forging partnerships with Meta and HTC that brought HBO content into the emerging metaverse.</p>
+          <p>His innovative spirit didn&rsquo;t stop there. As Director of Global Distribution, he pushed boundaries by developing groundbreaking virtual reality experiences for hit shows like Westworld and Game of Thrones, forging partnerships with Meta and HTC that brought HBO content into the emerging metaverse.</p>
 
           <h3>The Streaming Wars Era: Architecting Success at Scale</h3>
           <p>As the streaming landscape evolved, so did Jason&rsquo;s influence. At WarnerMedia, he played a crucial role in launching HBO MAX, crafting the digital storefront that would attract millions of subscribers. His expertise in user experience and customer acquisition drove a 20% improvement over HBO NOW's performance.</p>
@@ -260,6 +290,9 @@
 
     <hr />
 
+    <!-- ====================================================
+         PUBLICATIONS SECTION - Research and publications
+         ==================================================== -->
     <section id="publications">
       <div class="grid content-wrapper">
         <div class="col-6 start">
@@ -275,6 +308,9 @@
 
     <hr />
 
+    <!-- ====================================================
+         SPEAKING ENGAGEMENTS SECTION - Conference talks and presentations
+         ==================================================== -->
     <section id="speaker">
       <div class="grid content-wrapper">
         <div class="col-6 start">
@@ -297,7 +333,7 @@
             </a>
           </div>
           
-          <!-- StreamTV Image Gallery -->
+          <!-- StreamTV Image Gallery - Image carousel with navigation -->
           <div class="streamtv-gallery">
             <div class="gallery-container">
               <img src="./images/StreamTV1.JPG" alt="Stream TV 2025 Event - Jason Coppola speaking at the creator economy panel" class="gallery-image active" loading="eager">
@@ -325,11 +361,14 @@
       </div>
     </section>
 
+    <!-- ====================================================
+         FOOTER - Site footer
+         ==================================================== -->
     <footer>
         <p>Built in Los Angeles, CA</p>
     </footer>
 
-    <!-- Schema.org Structured Data -->
+    <!-- Schema.org Structured Data - SEO optimization for search engines -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -378,8 +417,10 @@
     }
     </script>
 
-    <!-- External scripts - deferred for better performance -->
+    <!-- External scripts - Deferred for better performance -->
+    <!-- AOS (Animate On Scroll) library - loaded asynchronously -->
     <script src="https://unpkg.com/aos@next/dist/aos.js" defer></script>
+    <!-- Main JavaScript file - handles all interactive functionality -->
     <script src="script.js" defer></script>
 
   </body>

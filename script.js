@@ -1,6 +1,20 @@
-// Enhanced JavaScript with SEO Optimizations
+/**
+ * Enhanced JavaScript with SEO Optimizations
+ * 
+ * This file handles all interactive functionality for the portfolio site including:
+ * - Menu toggle and navigation
+ * - Smooth scrolling
+ * - Section animations
+ * - Image gallery controls
+ * - Analytics tracking
+ * - Performance optimizations
+ */
 
-// Initialize AOS with optimized settings - wait for library to load since it's deferred
+/**
+ * Initialize AOS (Animate On Scroll) library
+ * Waits for the deferred library to load before initializing
+ * @returns {void}
+ */
 function initAOS() {
   if (typeof AOS !== 'undefined') {
     AOS.init({
@@ -16,17 +30,26 @@ function initAOS() {
   }
 }
 
-// Page load - removed blocking animation for faster initial render
+/**
+ * Main initialization - runs when DOM is ready
+ * Removed blocking animations for faster initial render
+ */
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize AOS when DOM is ready
     initAOS();
     
-    // Create scroll progress indicator
+    /**
+     * Scroll Progress Indicator
+     * Creates a visual progress bar at the top of the page showing scroll position
+     */
     const scrollProgress = document.createElement('div');
     scrollProgress.className = 'scroll-progress';
     document.body.appendChild(scrollProgress);
     
-    // Update scroll progress
+    /**
+     * Update scroll progress bar width based on scroll position
+     * @returns {void}
+     */
     function updateScrollProgress() {
         const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         const scrolled = window.pageYOffset;
@@ -34,18 +57,30 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollProgress.style.width = progress + '%';
     }
     
+    // Update progress on scroll (using passive listener for better performance)
     window.addEventListener('scroll', updateScrollProgress, { passive: true });
     updateScrollProgress();
-    // Initialize Menu Toggle Functionality
+    
+    /**
+     * Menu Toggle Functionality
+     * Handles opening/closing the mobile menu overlay with smooth animations
+     * @returns {void}
+     */
     function initMenuToggle() {
         const menuToggle = document.querySelector('.menu-toggle');
         const menuOverlay = document.getElementById('menuOverlay');
         const menuItems = document.querySelectorAll('.staggered-item');
         
+        // Exit early if menu elements don't exist
         if (!menuToggle || !menuOverlay) return;
         
         let isMenuOpen = false;
         
+        /**
+         * Toggle menu open/closed state
+         * Updates ARIA attributes, prevents body scroll when open, and animates menu items
+         * @returns {void}
+         */
         function toggleMenu() {
             isMenuOpen = !isMenuOpen;
             menuToggle.setAttribute('aria-expanded', isMenuOpen);
@@ -65,6 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
+        /**
+         * Animate menu items with staggered delay when menu opens
+         * Respects user's reduced motion preference
+         * @returns {void}
+         */
         function animateMenuItems() {
             // Check for reduced motion preference
             const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -94,106 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         
-        // Helper function to wait for layout stability
-        function waitForLayoutStability(callback, maxWait = 1000) {
-            let lastHeight = document.body.scrollHeight;
-            let lastWidth = document.body.scrollWidth;
-            let stableCount = 0;
-            const requiredStableFrames = 3; // Require 3 consecutive stable frames
-            const startTime = Date.now();
-            
-            function checkStability() {
-                const currentHeight = document.body.scrollHeight;
-                const currentWidth = document.body.scrollWidth;
-                const elapsed = Date.now() - startTime;
-                
-                // If layout hasn't changed, increment stable count
-                if (currentHeight === lastHeight && currentWidth === lastWidth) {
-                    stableCount++;
-                } else {
-                    stableCount = 0; // Reset if layout changed
-                }
-                
-                lastHeight = currentHeight;
-                lastWidth = currentWidth;
-                
-                // If layout is stable or max wait time reached, execute callback
-                if (stableCount >= requiredStableFrames || elapsed >= maxWait) {
-                    callback();
-                } else {
-                    requestAnimationFrame(checkStability);
-                }
-            }
-            
-            requestAnimationFrame(checkStability);
-        }
-        
-        // Helper function to preload images in a section
-        function preloadSectionImages(section) {
-            const images = section.querySelectorAll('img');
-            const imagePromises = [];
-            
-            images.forEach(img => {
-                // Check if image is lazy-loaded and not yet loaded
-                if (img.loading === 'lazy' && !img.complete && img.src) {
-                    const promise = new Promise((resolve) => {
-                        if (img.complete) {
-                            resolve();
-                            return;
-                        }
-                        
-                        // Force load by temporarily removing lazy loading attribute
-                        // This tells the browser to load the image immediately
-                        const wasLazy = img.loading === 'lazy';
-                        if (wasLazy) {
-                            img.loading = 'eager';
-                        }
-                        
-                        // Handle data-src if present
-                        if (img.dataset.src) {
-                            img.src = img.dataset.src;
-                        }
-                        
-                        // Wait for image to load
-                        const onLoad = () => {
-                            resolve();
-                        };
-                        const onError = () => {
-                            resolve(); // Resolve on error too to not block
-                        };
-                        
-                        img.addEventListener('load', onLoad, { once: true });
-                        img.addEventListener('error', onError, { once: true });
-                        
-                        // Timeout to not block indefinitely (200ms should be enough for most images)
-                        setTimeout(() => {
-                            img.removeEventListener('load', onLoad);
-                            img.removeEventListener('error', onError);
-                            resolve();
-                        }, 300);
-                    });
-                    imagePromises.push(promise);
-                } else if (!img.complete && img.src) {
-                    // Also handle non-lazy images that aren't loaded yet
-                    const promise = new Promise((resolve) => {
-                        if (img.complete) {
-                            resolve();
-                            return;
-                        }
-                        
-                        img.addEventListener('load', resolve, { once: true });
-                        img.addEventListener('error', resolve, { once: true });
-                        setTimeout(resolve, 200);
-                    });
-                    imagePromises.push(promise);
-                }
-            });
-            
-            // Return promise that resolves when all images are loaded or timeout
-            // If no images to load, return immediately resolved promise
-            return imagePromises.length > 0 ? Promise.all(imagePromises) : Promise.resolve();
-        }
-        
         // Close menu when clicking on a menu link - ensure scroll happens after layout stabilizes
         menuItems.forEach(item => {
             const link = item.querySelector('a');
@@ -219,38 +159,37 @@ document.addEventListener('DOMContentLoaded', () => {
                             item.classList.remove('visible');
                         });
                         
-                        // Wait for menu close animation, then preload images and wait for layout stability
+                        // Wait for menu close animation, then scroll
                         setTimeout(() => {
-                            // Preload images in the target section to prevent layout shifts
-                            preloadSectionImages(targetElement).then(() => {
-                                // Wait for layout to stabilize (handles any remaining layout shifts)
-                                waitForLayoutStability(() => {
-                                    // Double RAF to ensure everything is ready
-                                    requestAnimationFrame(() => {
-                                        requestAnimationFrame(() => {
-                                            // Calculate position manually for more control
-                                            const nav = document.querySelector('nav');
-                                            const navHeight = nav ? nav.offsetHeight : 100;
-                                            const rect = targetElement.getBoundingClientRect();
-                                            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                                            const targetPosition = rect.top + scrollTop - navHeight;
-                                            
-                                            // Scroll to calculated position
-                                            window.scrollTo({
-                                                top: Math.max(0, targetPosition),
-                                                behavior: 'smooth'
-                                            });
-                                            
-                                            // Track navigation for analytics
-                                            if (typeof gtag !== 'undefined') {
-                                                gtag('event', 'internal_navigation', {
-                                                    'event_category': 'Internal Links',
-                                                    'event_label': `Clicked: ${targetId}`
-                                                });
-                                            }
-                                        });
+                            // Use requestAnimationFrame to ensure DOM is ready
+                            requestAnimationFrame(() => {
+                                // Calculate scroll position accounting for fixed nav
+                                const nav = document.querySelector('nav');
+                                const navHeight = nav ? nav.offsetHeight : 100;
+                                
+                                // Get current scroll position
+                                const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                                
+                                // Get element's bounding rect relative to viewport
+                                const rect = targetElement.getBoundingClientRect();
+                                
+                                // Calculate target scroll position
+                                // rect.top is relative to viewport, add current scroll to get absolute position
+                                const targetScroll = rect.top + currentScroll - navHeight;
+                                
+                                // Scroll to calculated position
+                                window.scrollTo({
+                                    top: Math.max(0, targetScroll),
+                                    behavior: 'smooth'
+                                });
+                                
+                                // Track navigation for analytics
+                                if (typeof gtag !== 'undefined') {
+                                    gtag('event', 'internal_navigation', {
+                                        'event_category': 'Internal Links',
+                                        'event_label': `Clicked: ${targetId}`
                                     });
-                                }, 300); // Max 300ms wait for layout stability after images load
+                                }
                             });
                         }, 350); // Wait 350ms for menu animation (300ms) + small buffer
                     }
@@ -269,7 +208,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize menu toggle
     initMenuToggle();
     
-    // Smooth scroll enhancement with easing
+    /**
+     * Smooth scroll to target element with custom easing
+     * Calculates proper offset to account for fixed navigation bar
+     * @param {string} target - CSS selector for target element
+     * @param {number} duration - Animation duration in milliseconds (default: 1000ms)
+     * @returns {void}
+     */
     function smoothScrollTo(target, duration = 1000) {
         const targetElement = document.querySelector(target);
         if (!targetElement) return;
@@ -285,10 +230,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const distance = targetPosition - startPosition;
             let startTime = null;
             
+            /**
+             * Cubic easing function for smooth animation
+             * @param {number} t - Progress value between 0 and 1
+             * @returns {number} - Eased progress value
+             */
             function easeInOutCubic(t) {
                 return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
             }
             
+            /**
+             * Animation frame handler
+             * @param {number} currentTime - Current timestamp from requestAnimationFrame
+             * @returns {void}
+             */
             function animation(currentTime) {
                 if (startTime === null) startTime = currentTime;
                 const timeElapsed = currentTime - startTime;
@@ -306,9 +261,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Enhanced smooth scrolling for navigation links - faster for snappier feel
+    /**
+     * Enhanced smooth scrolling for navigation links
+     * Faster duration (600ms) for snappier feel
+     * Skips menu items as they have their own handler
+     */
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
+            // Skip if this is a menu item (handled by menu handler)
+            if (this.closest('.staggered-item') || this.closest('.menu-nav')) {
+                return;
+            }
+            
             e.preventDefault();
             const targetId = this.getAttribute('href');
             // Use faster scroll duration for snappier feel
@@ -324,7 +288,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Nav logo links - scroll to top
+    /**
+     * Nav logo links - scroll to top when clicked
+     * Tracks logo clicks for analytics
+     */
     document.querySelectorAll('.nav-logo-link').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -343,7 +310,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Premium Section Animation System with Parallax
+    /**
+     * Section Animation System with Parallax Effect
+     * Uses Intersection Observer for efficient scroll-based animations
+     * Applies subtle parallax to logos only (not gallery images)
+     * @returns {void}
+     */
     function initSectionAnimations() {
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         
@@ -355,7 +327,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        // Create Intersection Observer for sections
+        /**
+         * Intersection Observer for section animations
+         * Triggers when 12% of section is visible
+         * Uses negative rootMargin to start animation earlier for smoother feel
+         */
         const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -394,11 +370,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 200);
         }
         
-        // Subtle parallax effect for logos only (not gallery images to avoid conflicts)
+        /**
+         * Subtle parallax effect for logos only
+         * Not applied to gallery images to avoid conflicts
+         * Uses requestAnimationFrame for smooth performance
+         */
         if (!prefersReducedMotion) {
             const parallaxElements = document.querySelectorAll('.logo');
             let ticking = false;
             
+            /**
+             * Update parallax transform for all logo elements
+             * Only applies when element is in viewport
+             * @returns {void}
+             */
             function updateParallax() {
                 parallaxElements.forEach((el) => {
                     const rect = el.getBoundingClientRect();
@@ -418,6 +403,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 ticking = false;
             }
             
+            /**
+             * Throttle parallax updates using requestAnimationFrame
+             * Prevents excessive calculations during scroll
+             * @returns {void}
+             */
             function requestTick() {
                 if (!ticking) {
                     window.requestAnimationFrame(updateParallax);
@@ -429,7 +419,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Initialize section animations - use requestIdleCallback for better performance
+    /**
+     * Initialize section animations
+     * Uses requestIdleCallback for better performance (defers until browser is idle)
+     * Falls back to setTimeout for browsers without requestIdleCallback support
+     */
     if ('requestIdleCallback' in window) {
         requestIdleCallback(() => initSectionAnimations(), { timeout: 2000 });
     } else {
@@ -437,9 +431,11 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(initSectionAnimations, 100);
     }
     
-    // Note: Smooth scrolling is now handled above with enhanced easing
-
-    // Track section views for analytics (separate from animations) - defer for performance
+    /**
+     * Track section views for analytics
+     * Separate from animations - defers for performance
+     * Triggers when 30% of section is visible
+     */
     if ('requestIdleCallback' in window) {
         requestIdleCallback(() => {
             const analyticsObserver = new IntersectionObserver((entries) => {
@@ -488,9 +484,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     }
 
-    // Lazy loading is now handled directly in HTML with loading="lazy" attributes
-    // This is more efficient than JavaScript-based lazy loading
-    // Fallback for older browsers that don't support native lazy loading
+    /**
+     * Lazy loading fallback for older browsers
+     * Modern browsers handle lazy loading natively via loading="lazy" attribute
+     * This provides fallback support for browsers without native lazy loading
+     */
     if (!('loading' in HTMLImageElement.prototype)) {
         const lazyImages = document.querySelectorAll('img[loading="lazy"]');
         const lazyImageObserver = new IntersectionObserver((entries) => {
@@ -512,7 +510,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Mobile optimization enhancements (SEO improvement #8) - defer for performance
+    /**
+     * Mobile optimization enhancements
+     * Optimizes gallery image quality and simplifies animations on mobile devices
+     * @returns {void}
+     */
     function handleMobileOptimization() {
         const isMobile = window.innerWidth < 768;
         
@@ -531,7 +533,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Run mobile optimization on load and resize - throttle resize events
+    /**
+     * Throttled mobile optimization handler
+     * Runs on load and resize events to optimize for mobile devices
+     * Throttles resize events to prevent excessive calculations
+     */
     let resizeTimeout;
     const throttledMobileOptimization = () => {
         clearTimeout(resizeTimeout);
@@ -545,7 +551,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.addEventListener('resize', throttledMobileOptimization, { passive: true });
 
-    // Breadcrumb navigation enhancement (SEO improvement #12) - defer for performance
+    /**
+     * Breadcrumb navigation enhancement
+     * Updates active breadcrumb state based on current section visibility
+     * Defers execution for performance
+     * @returns {void}
+     */
     function updateBreadcrumbs() {
         const breadcrumbs = document.querySelector('.breadcrumb');
         if (!breadcrumbs) return;
@@ -589,7 +600,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Update breadcrumbs on scroll and hash change - use passive listeners and throttle
+    /**
+     * Throttled breadcrumb update handler
+     * Updates breadcrumbs on scroll and hash change
+     * Uses passive listeners and throttling for performance
+     */
     let breadcrumbTimeout;
     const throttledUpdateBreadcrumbs = () => {
         clearTimeout(breadcrumbTimeout);
@@ -604,7 +619,12 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(updateBreadcrumbs, 100);
     }
     
-    // Schema.org structured data enhancement (SEO improvement #5)
+    /**
+     * Schema.org structured data enhancement
+     * Injects JSON-LD structured data for better SEO
+     * Only creates script if it doesn't already exist
+     * @returns {void}
+     */
     function injectStructuredData() {
         const structuredData = {
             "@context": "https://schema.org",
@@ -663,7 +683,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     injectStructuredData();
 
-    // Form submission handling with enhanced tracking
+    /**
+     * Form submission handling with enhanced tracking
+     * Currently shows alert (replace with actual form submission logic)
+     * Tracks form submissions for conversion analytics
+     */
     const form = document.getElementById('contact-form');
     if (form) {
         form.addEventListener('submit', (e) => {
@@ -682,7 +706,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // KPI details animation
+    /**
+     * KPI details animation
+     * Handles toggle animations for expandable KPI sections
+     */
     const details = document.querySelectorAll('.kpi-list');
     details.forEach(detail => {
         detail.addEventListener('toggle', () => {
@@ -698,7 +725,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Check if site is being indexed by search engines
+    /**
+     * Search engine bot detection
+     * Ensures critical content is fully rendered for search engine crawlers
+     * Removes animation attributes that might prevent proper indexing
+     */
     const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
     if (isBot) {
         // Ensure critical content is fully rendered for search engine crawlers
@@ -708,7 +739,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // StreamTV Image Gallery - Simplified Implementation
+    /**
+     * StreamTV Image Gallery - Simplified Implementation
+     * Handles image carousel with navigation buttons, keyboard controls, and touch/swipe support
+     * Includes analytics tracking for gallery interactions
+     * @returns {void}
+     */
     function initStreamTVGallery() {
         const gallery = document.querySelector('.streamtv-gallery');
         if (!gallery) return;
@@ -729,7 +765,12 @@ document.addEventListener('DOMContentLoaded', () => {
             totalImagesSpan.textContent = images.length;
         }
         
-        // Simple function to show image by index
+        /**
+         * Show image by index
+         * Updates active class, counter, and current index
+         * @param {number} index - Zero-based index of image to show
+         * @returns {void}
+         */
         function showImage(index) {
             // Remove active class from all images
             images.forEach(img => img.classList.remove('active'));
@@ -747,18 +788,25 @@ document.addEventListener('DOMContentLoaded', () => {
             currentIndex = index;
         }
         
-        // Navigation functions
+        /**
+         * Navigate to next image (wraps to first if at end)
+         * @returns {void}
+         */
         function nextImage() {
             const nextIndex = (currentIndex + 1) % images.length;
             showImage(nextIndex);
         }
         
+        /**
+         * Navigate to previous image (wraps to last if at beginning)
+         * @returns {void}
+         */
         function prevImage() {
             const prevIndex = (currentIndex - 1 + images.length) % images.length;
             showImage(prevIndex);
         }
         
-        // Button event listeners
+        // Button event listeners for navigation
         if (prevBtn) {
             prevBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -773,7 +821,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
-        // Keyboard navigation
+        /**
+         * Keyboard navigation support
+         * Arrow keys for navigation, tabindex for focus management
+         */
         if (container) {
             container.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowLeft') {
@@ -785,7 +836,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             
-            // Touch/swipe support for mobile
+            /**
+             * Touch/swipe support for mobile devices
+             * Detects swipe gestures and navigates accordingly
+             */
             let touchStartX = 0;
             let touchEndX = 0;
             
@@ -811,7 +865,10 @@ document.addEventListener('DOMContentLoaded', () => {
             container.setAttribute('tabindex', '0');
         }
         
-        // Initialize: Check if first image already has active class, if not add it
+        /**
+         * Initialize gallery state
+         * Checks if first image already has active class, otherwise sets it
+         */
         const firstImage = images[0];
         if (firstImage && !firstImage.classList.contains('active')) {
             showImage(0);
@@ -823,10 +880,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        // Make container focusable for keyboard navigation
-        container.setAttribute('tabindex', '0');
-        
-        // Track gallery interactions for analytics
+        /**
+         * Track gallery interactions for analytics
+         * Records navigation button clicks for engagement metrics
+         */
         if (typeof gtag !== 'undefined') {
             [prevBtn, nextBtn].forEach(btn => {
                 if (btn) {
@@ -841,15 +898,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Initialize the gallery - defer for better initial load performance
+    /**
+     * Initialize the gallery
+     * Defers execution for better initial load performance
+     * Uses requestIdleCallback when available, falls back to setTimeout
+     */
     if ('requestIdleCallback' in window) {
         requestIdleCallback(() => initStreamTVGallery(), { timeout: 2000 });
     } else {
         setTimeout(initStreamTVGallery, 200);
     }
     
-    // YouTube Video Link - opens in new tab (no modal needed)
-    // The link is already in the HTML, just ensure it works properly
+    /**
+     * YouTube Video Link tracking
+     * The link opens in new tab (no modal needed)
+     * Tracks clicks for analytics
+     */
     const youtubeLink = document.querySelector('.youtube-thumbnail-link');
     if (youtubeLink) {
         // Track clicks for analytics
@@ -865,7 +929,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Add page load time tracking for performance monitoring
+/**
+ * Page load time tracking for performance monitoring
+ * Measures and reports page load time to analytics
+ * Runs after all resources are loaded
+ */
 window.addEventListener('load', () => {
     setTimeout(() => {
         const performanceData = window.performance.timing;

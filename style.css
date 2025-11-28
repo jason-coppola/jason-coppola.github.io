@@ -1,16 +1,19 @@
-/*
- ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄ 
-▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
-▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀▀▀  ▀▀▀▀█░█▀▀▀▀ 
-▐░▌       ▐░▌▐░▌          ▐░▌          ▐░▌               ▐░▌     
-▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄▄▄      ▐░▌     
-▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌     
-▐░█▀▀▀▀█░█▀▀ ▐░█▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░▌     
-▐░▌     ▐░▌  ▐░▌                    ▐░▌▐░▌               ▐░▌     
-▐░▌      ▐░▌ ▐░█▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░▌     
-▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌     
- ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀       ▀      
+/**
+ * CSS Reset & Base Styles
+ * 
+ * This stylesheet contains all styles for the portfolio site including:
+ * - CSS Reset (normalize browser defaults)
+ * - Typography and layout
+ * - Navigation and menu system
+ * - Section animations and effects
+ * - Gallery and media components
+ * - Responsive design breakpoints
+ * - Accessibility features
  */
+
+/* ====================================================
+   CSS RESET - Normalize browser default styles
+   ==================================================== */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -31,32 +34,41 @@ time, mark, audio, video {
   font: inherit;
   vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
   display: block;
 }
+
 body {
   line-height: 1;
 }
+
 ol, ul {
   list-style: none;
 }
+
 blockquote, q {
   quotes: none;
 }
+
 blockquote:before, blockquote:after,
 q:before, q:after {
   content: '';
   content: none;
 }
+
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-/*====================================================*/
+/* ====================================================
+   BASE STYLES - Global typography and layout
+   ==================================================== */
 
+/* Base HTML and body styles */
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
@@ -77,6 +89,9 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* ====================================================
+   LINKS - Base link styles and hover effects
+   ==================================================== */
 a:link, a:visited {
   text-decoration: none;
   color: #101010;
@@ -88,6 +103,7 @@ a:hover {
   color: #4a4a4a;
 }
 
+/* Link styles for dark sections */
 .black a:link, .black a:visited {
   color: #eaeaea;
 }
@@ -97,7 +113,9 @@ a:hover {
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
-/* Layout */
+/* ====================================================
+   LAYOUT - Section and grid system
+   ==================================================== */
 section {
   padding: 40px 0;
   max-width: 100%;
@@ -120,6 +138,9 @@ section iframe {
   overflow: visible !important;
 }
 
+/* ====================================================
+   NAVIGATION - Fixed header with menu toggle
+   ==================================================== */
 nav {
   width: 100%;
   max-width: 100%;
@@ -139,7 +160,7 @@ nav {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
-/* Scroll progress indicator */
+/* Scroll progress indicator - visual progress bar at top of page */
 .scroll-progress {
   position: fixed;
   top: 0;
@@ -160,7 +181,9 @@ nav h1:last-of-type {
   flex: 0 0 auto;
 }
 
-/* Menu Toggle Button */
+/* ====================================================
+   MENU TOGGLE - Hamburger menu button
+   ==================================================== */
 .menu-toggle {
   background: none;
   border: none;
@@ -210,7 +233,9 @@ nav h1:last-of-type {
   transform: rotate(-45deg) translate(8px, -8px);
 }
 
-/* Menu Overlay */
+/* ====================================================
+   MENU OVERLAY - Slide-out menu panel
+   ==================================================== */
 .menu-overlay {
   position: fixed;
   top: 0;
@@ -488,7 +513,9 @@ hr::after {
     background: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%);
 }
 
-/* Design */
+/* ====================================================
+   TYPOGRAPHY - Headings and text styles
+   ==================================================== */
 nav h1 {
   font-size: 1em;
   font-weight: normal;
@@ -534,7 +561,7 @@ nav h2 {
   font-weight: normal;
 }
 
-/* Type - Fixed heading hierarchy for SEO improvement #3 */
+/* Heading hierarchy - Fixed for SEO */
 h1 {
   font-size: 2em;
   font-weight: 600;
@@ -585,7 +612,9 @@ p + h3 {
   margin-top: 2em;
 }
 
-/* Intro Section */
+/* ====================================================
+   INTRO SECTION - Hero section with headline
+   ==================================================== */
 #intro {
   padding: 0;
   min-height: 100vh;
@@ -629,9 +658,8 @@ p + h3 {
   box-sizing: border-box;
 }
 
-/* Page load animation - removed for faster initial render */
-
-/* Smooth page transition - removed blocking opacity for faster initial render */
+/* Page load animation removed for faster initial render */
+/* Smooth page transition removed - blocking opacity eliminated for performance */
 body {
   opacity: 1;
 }
@@ -754,7 +782,9 @@ body {
   }
 }
 
-/* Staggered Menu Styles */
+/* ====================================================
+   STAGGERED MENU - Animated menu items
+   ==================================================== */
 .staggered-menu {
   list-style: none;
   margin: 0;
@@ -782,7 +812,9 @@ body {
   transform: translateX(10px);
 }
 
-/* Premium Section Animations */
+/* ====================================================
+   SECTION ANIMATIONS - Scroll-triggered animations
+   ==================================================== */
 .animate-section {
   /* Section itself is always visible - only items animate */
   opacity: 1;
@@ -1048,7 +1080,6 @@ body {
   line-height: 1.25;
   font-weight: 500;
   color: #101010;
-  margin-top: 2em;
   margin-bottom: 1em;
   width: 100%;
 }
@@ -1146,7 +1177,11 @@ footer {
   scroll-margin-top: 100px;
 }
 
-/* Mobile Optimization Enhancements - for SEO improvement #8 */
+/* ====================================================
+   RESPONSIVE DESIGN - Mobile and tablet breakpoints
+   ==================================================== */
+
+/* Mobile Optimization - for SEO improvement */
 @media screen and (max-width: 768px) {
   nav {
     padding: 20px 16px;
@@ -1330,7 +1365,7 @@ footer {
   }
 }
 
-/* Print styles for better accessibility */
+/* Print styles - optimizes layout for printing */
 @media print {
   nav {
     position: relative;
@@ -1345,7 +1380,9 @@ footer {
   }
 }
 
-/* StreamTV Image Gallery Styles - Simplified & Responsive */
+/* ====================================================
+   STREAMTV GALLERY - Image carousel component
+   ==================================================== */
 .streamtv-gallery {
   margin-top: 30px;
   margin-bottom: 40px;
@@ -1620,7 +1657,7 @@ footer {
   }
 }
 
-/* High contrast mode support */
+/* High contrast mode support - improves accessibility */
 @media (prefers-contrast: high) {
   .gallery-btn.overlay-btn {
     background: rgba(0, 0, 0, 0.9);
@@ -1653,7 +1690,9 @@ footer {
   
 }
 
-/* YouTube Video Thumbnail Link */
+/* ====================================================
+   YOUTUBE VIDEO - Thumbnail and play button
+   ==================================================== */
 .youtube-video-container {
   width: 100%;
   max-width: 560px;
