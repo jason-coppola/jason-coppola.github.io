@@ -11,6 +11,46 @@
  */
 
 /**
+ * Wait for fonts to load to prevent layout shifts
+ * @returns {Promise<void>}
+ */
+function waitForFonts() {
+  if (document.fonts && document.fonts.ready) {
+    return document.fonts.ready;
+  }
+  // Fallback for browsers without Font Loading API
+  return new Promise((resolve) => {
+    if (document.readyState === 'complete') {
+      // Give fonts time to load
+      setTimeout(resolve, 100);
+    } else {
+      window.addEventListener('load', () => {
+        setTimeout(resolve, 100);
+      });
+    }
+  });
+}
+
+/**
+ * Wait for page to be fully rendered
+ * Ensures layout is stable before scroll calculations
+ * @returns {Promise<void>}
+ */
+function waitForRender() {
+  return new Promise((resolve) => {
+    // Wait for fonts first
+    waitForFonts().then(() => {
+      // Then wait for next frame to ensure layout is calculated
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          resolve();
+        });
+      });
+    });
+  });
+}
+
+/**
  * Initialize AOS (Animate On Scroll) library
  * Waits for the deferred library to load before initializing
  * @returns {void}
@@ -31,10 +71,28 @@ function initAOS() {
 }
 
 /**
+ * Track if page is fully loaded and ready for scroll calculations
+ * This prevents scroll calculations before fonts and layout are stable
+ */
+let pageReady = false;
+
+/**
+ * Mark page as ready once fonts and layout are stable
+ */
+function markPageReady() {
+    waitForRender().then(() => {
+        pageReady = true;
+    });
+}
+
+/**
  * Main initialization - runs when DOM is ready
  * Removed blocking animations for faster initial render
  */
 document.addEventListener('DOMContentLoaded', () => {
+    // Mark page as ready in the background
+    markPageReady();
+    
     // Initialize AOS when DOM is ready
     initAOS();
     
@@ -160,38 +218,51 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         
                         // Wait for menu close animation, then scroll
+                        // Ensure fonts are loaded and page is fully rendered before calculating
                         setTimeout(() => {
-                            // Use requestAnimationFrame to ensure DOM is ready
-                            requestAnimationFrame(() => {
-                                // Calculate scroll position accounting for fixed nav
-                                const nav = document.querySelector('nav');
-                                const navHeight = nav ? nav.offsetHeight : 100;
-                                
-                                // Get current scroll position
-                                const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-                                
-                                // Get element's bounding rect relative to viewport
-                                const rect = targetElement.getBoundingClientRect();
-                                
-                                // Calculate target scroll position
-                                // rect.top is relative to viewport, add current scroll to get absolute position
-                                const targetScroll = rect.top + currentScroll - navHeight;
-                                
-                                // Scroll to calculated position
-                                window.scrollTo({
-                                    top: Math.max(0, targetScroll),
-                                    behavior: 'smooth'
-                                });
-                                
-                                // Track navigation for analytics
-                                if (typeof gtag !== 'undefined') {
-                                    gtag('event', 'internal_navigation', {
-                                        'event_category': 'Internal Links',
-                                        'event_label': `Clicked: ${targetId}`
+                            // If page isn't ready yet (first load), wait a bit longer
+                            const scrollDelay = pageReady ? 0 : 200;
+                            
+                            setTimeout(() => {
+                                waitForRender().then(() => {
+                                    // Additional frame to ensure menu animation is complete and layout is stable
+                                    requestAnimationFrame(() => {
+                                        requestAnimationFrame(() => {
+                                            // Get nav height dynamically (accounts for responsive changes)
+                                            const nav = document.querySelector('nav');
+                                            const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 100;
+                                            
+                                            // Get the element's position relative to document
+                                            // Use getBoundingClientRect for accurate positioning
+                                            const rect = targetElement.getBoundingClientRect();
+                                            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                                            
+                                            // Calculate absolute position of element top
+                                            const elementTop = rect.top + scrollTop;
+                                            
+                                            // Calculate target scroll: element top - nav height - small buffer
+                                            // Buffer ensures content isn't hidden under nav
+                                            const buffer = 20; // Extra spacing for visual clarity
+                                            const targetScroll = Math.max(0, elementTop - navHeight - buffer);
+                                            
+                                            // Scroll to target position
+                                            window.scrollTo({
+                                                top: targetScroll,
+                                                behavior: 'smooth'
+                                            });
+                                            
+                                            // Track navigation for analytics
+                                            if (typeof gtag !== 'undefined') {
+                                                gtag('event', 'internal_navigation', {
+                                                    'event_category': 'Internal Links',
+                                                    'event_label': `Clicked: ${targetId}`
+                                                });
+                                            }
+                                        });
                                     });
-                                }
-                            });
-                        }, 350); // Wait 350ms for menu animation (300ms) + small buffer
+                                });
+                            }, scrollDelay);
+                        }, 400); // Wait for menu animation to complete (300ms) + buffer
                     }
                 });
             }
@@ -219,14 +290,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetElement = document.querySelector(target);
         if (!targetElement) return;
         
-        // Calculate nav height dynamically for accurate offset
-        const nav = document.querySelector('nav');
-        const navHeight = nav ? nav.offsetHeight : 80;
-        
-        // Use requestAnimationFrame to ensure layout is stable before calculating position
-        requestAnimationFrame(() => {
-            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight;
-            const startPosition = window.pageYOffset;
+        // Wait for fonts and full render before calculating scroll position
+        waitForRender().then(() => {
+            // Calculate nav height dynamically for accurate offset
+            const nav = document.querySelector('nav');
+            const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 100;
+            
+            // Get element position relative to document
+            const rect = targetElement.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const elementTop = rect.top + scrollTop;
+            
+            // Calculate target position with buffer for visual clarity
+            const buffer = 20;
+            const targetPosition = Math.max(0, elementTop - navHeight - buffer);
+            const startPosition = scrollTop;
             const distance = targetPosition - startPosition;
             let startTime = null;
             
@@ -935,6 +1013,9 @@ document.addEventListener('DOMContentLoaded', () => {
  * Runs after all resources are loaded
  */
 window.addEventListener('load', () => {
+    // Ensure page is marked as ready after all resources load
+    markPageReady();
+    
     setTimeout(() => {
         const performanceData = window.performance.timing;
         const pageLoadTime = performanceData.loadEventEnd - performanceData.navigationStart;

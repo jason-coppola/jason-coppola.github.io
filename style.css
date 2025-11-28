@@ -76,7 +76,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   color: #101010;
   margin: 0;
   padding: 0;
@@ -87,6 +87,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Prevent layout shifts while fonts load */
+  font-display: swap;
 }
 
 /* ====================================================
@@ -158,6 +160,9 @@ nav {
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  /* Ensure stable height to prevent layout shifts during font loading */
+  min-height: 72px;
+  height: auto;
 }
 
 /* Scroll progress indicator - visual progress bar at top of page */
@@ -1170,11 +1175,22 @@ footer {
   margin-top: 60px;
 }
 
-#achievements,
-#background,
-#publications,
-#speaker {
+/* Scroll margin for all sections to account for fixed nav */
+section[id] {
   scroll-margin-top: 100px;
+}
+
+/* Responsive scroll margin adjustments */
+@media screen and (max-width: 768px) {
+  section[id] {
+    scroll-margin-top: 90px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  section[id] {
+    scroll-margin-top: 80px;
+  }
 }
 
 /* ====================================================
