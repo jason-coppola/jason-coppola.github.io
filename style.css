@@ -302,7 +302,7 @@ nav h1:last-of-type {
   }
   
   .menu-nav {
-    padding: 80px 30px 30px;
+    padding: 140px 30px 30px;
   }
   
   .menu-nav .staggered-item a {
@@ -311,6 +311,13 @@ nav h1:last-of-type {
   
   .menu-nav .staggered-item {
     margin: 0 0 25px 0;
+  }
+}
+
+/* Extra padding for very small screens where nav might be taller */
+@media screen and (max-width: 480px) {
+  .menu-nav {
+    padding-top: 160px;
   }
 }
 
