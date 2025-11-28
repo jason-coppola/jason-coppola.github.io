@@ -439,22 +439,10 @@ p + h3 {
   margin: 0 auto;
 }
 
-/* Page load animation */
-body.loading {
-  overflow: hidden;
-}
+/* Page load animation - removed for faster initial render */
 
-body.loaded {
-  overflow: auto;
-}
-
-/* Smooth page transition */
+/* Smooth page transition - removed blocking opacity for faster initial render */
 body {
-  opacity: 0;
-  transition: opacity 0.4s ease-in;
-}
-
-body.loaded {
   opacity: 1;
 }
 

@@ -1,23 +1,25 @@
 // Enhanced JavaScript with SEO Optimizations
 
-// Initialize AOS with optimized settings
-AOS.init({
-  duration: 800,
-  easing: 'ease-in-out',
-  once: true,
-  mirror: false,
-  disable: 'mobile' // Disable on mobile for better performance
-});
+// Initialize AOS with optimized settings - wait for library to load since it's deferred
+function initAOS() {
+  if (typeof AOS !== 'undefined') {
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true,
+      mirror: false,
+      disable: 'mobile' // Disable on mobile for better performance
+    });
+  } else {
+    // Retry if AOS hasn't loaded yet (for deferred scripts)
+    setTimeout(initAOS, 50);
+  }
+}
 
-// Page load animation
-window.addEventListener('load', () => {
-    document.body.classList.add('loaded');
-    document.body.classList.remove('loading');
-});
-
+// Page load - removed blocking animation for faster initial render
 document.addEventListener('DOMContentLoaded', () => {
-    // Add loading class initially
-    document.body.classList.add('loading');
+    // Initialize AOS when DOM is ready
+    initAOS();
     // Initialize Menu Toggle Functionality
     function initMenuToggle() {
         const menuToggle = document.querySelector('.menu-toggle');
@@ -160,8 +162,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Initialize section animations
-    initSectionAnimations();
+    // Initialize section animations - use requestIdleCallback for better performance
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => initSectionAnimations(), { timeout: 2000 });
+    } else {
+        // Fallback for browsers without requestIdleCallback
+        setTimeout(initSectionAnimations, 100);
+    }
     
     // Smooth scrolling for navigation links with enhanced tracking
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -182,47 +189,69 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Track section views for analytics (separate from animations)
-    const analyticsObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting && entry.target.id) {
-                // Track visible sections for engagement metrics
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'section_view', {
-                        'event_category': 'Content Engagement',
-                        'event_label': `Viewed: ${entry.target.id} section`
-                    });
-                }
-                // Unobserve after tracking to prevent duplicate events
-                analyticsObserver.unobserve(entry.target);
-            }
-        });
-    }, {
-        threshold: 0.3 // Trigger when 30% of the element is visible
-    });
+    // Track section views for analytics (separate from animations) - defer for performance
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+            const analyticsObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting && entry.target.id) {
+                        // Track visible sections for engagement metrics
+                        if (typeof gtag !== 'undefined') {
+                            gtag('event', 'section_view', {
+                                'event_category': 'Content Engagement',
+                                'event_label': `Viewed: ${entry.target.id} section`
+                            });
+                        }
+                        // Unobserve after tracking to prevent duplicate events
+                        analyticsObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.3 // Trigger when 30% of the element is visible
+            });
 
-    // Observe all sections for analytics
-    document.querySelectorAll('section[id]').forEach((section) => {
-        analyticsObserver.observe(section);
-    });
-
-    // Implement lazy loading for images (SEO improvement #9)
-    if ('loading' in HTMLImageElement.prototype) {
-        // Browser supports native lazy loading
-        document.querySelectorAll('img').forEach(img => {
-            if (!img.hasAttribute('loading') && !img.classList.contains('critical')) {
-                img.setAttribute('loading', 'lazy');
-            }
-        });
+            // Observe all sections for analytics
+            document.querySelectorAll('section[id]').forEach((section) => {
+                analyticsObserver.observe(section);
+            });
+        }, { timeout: 3000 });
     } else {
-        // Fallback for browsers that don't support native lazy loading
-        const lazyImages = document.querySelectorAll('img[data-src]');
+        setTimeout(() => {
+            const analyticsObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting && entry.target.id) {
+                        if (typeof gtag !== 'undefined') {
+                            gtag('event', 'section_view', {
+                                'event_category': 'Content Engagement',
+                                'event_label': `Viewed: ${entry.target.id} section`
+                            });
+                        }
+                        analyticsObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.3
+            });
+            document.querySelectorAll('section[id]').forEach((section) => {
+                analyticsObserver.observe(section);
+            });
+        }, 500);
+    }
+
+    // Lazy loading is now handled directly in HTML with loading="lazy" attributes
+    // This is more efficient than JavaScript-based lazy loading
+    // Fallback for older browsers that don't support native lazy loading
+    if (!('loading' in HTMLImageElement.prototype)) {
+        const lazyImages = document.querySelectorAll('img[loading="lazy"]');
         const lazyImageObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
+                    // Force load for browsers without native support
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                    }
                     lazyImageObserver.unobserve(img);
                 }
             });
@@ -233,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Mobile optimization enhancements (SEO improvement #8)
+    // Mobile optimization enhancements (SEO improvement #8) - defer for performance
     function handleMobileOptimization() {
         const isMobile = window.innerWidth < 768;
         
@@ -252,11 +281,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Run mobile optimization on load and resize
-    handleMobileOptimization();
-    window.addEventListener('resize', handleMobileOptimization);
+    // Run mobile optimization on load and resize - throttle resize events
+    let resizeTimeout;
+    const throttledMobileOptimization = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(handleMobileOptimization, 150);
+    };
+    
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(handleMobileOptimization, { timeout: 1000 });
+    } else {
+        setTimeout(handleMobileOptimization, 100);
+    }
+    window.addEventListener('resize', throttledMobileOptimization, { passive: true });
 
-    // Breadcrumb navigation enhancement (SEO improvement #12)
+    // Breadcrumb navigation enhancement (SEO improvement #12) - defer for performance
     function updateBreadcrumbs() {
         const breadcrumbs = document.querySelector('.breadcrumb');
         if (!breadcrumbs) return;
@@ -300,10 +339,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Update breadcrumbs on scroll and hash change
-    window.addEventListener('scroll', updateBreadcrumbs);
+    // Update breadcrumbs on scroll and hash change - use passive listeners and throttle
+    let breadcrumbTimeout;
+    const throttledUpdateBreadcrumbs = () => {
+        clearTimeout(breadcrumbTimeout);
+        breadcrumbTimeout = setTimeout(updateBreadcrumbs, 100);
+    };
+    window.addEventListener('scroll', throttledUpdateBreadcrumbs, { passive: true });
     window.addEventListener('hashchange', updateBreadcrumbs);
-    updateBreadcrumbs();
+    // Defer initial update
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(updateBreadcrumbs, { timeout: 1000 });
+    } else {
+        setTimeout(updateBreadcrumbs, 100);
+    }
     
     // Schema.org structured data enhancement (SEO improvement #5)
     function injectStructuredData() {
@@ -409,7 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // StreamTV Image Gallery functionality
+    // StreamTV Image Gallery functionality - defer initialization for performance
     function initStreamTVGallery() {
         const gallery = document.querySelector('.streamtv-gallery');
         if (!gallery) return;
@@ -428,6 +477,18 @@ document.addEventListener('DOMContentLoaded', () => {
             totalImagesSpan.textContent = images.length;
         }
         
+        // Preload next image for smoother transitions
+        function preloadNextImage() {
+            const nextIndex = (currentIndex + 1) % images.length;
+            const nextImg = images[nextIndex];
+            if (nextImg && nextImg.src && !nextImg.complete) {
+                const link = document.createElement('link');
+                link.rel = 'prefetch';
+                link.href = nextImg.src;
+                document.head.appendChild(link);
+            }
+        }
+        
         function showImage(index) {
             // Remove active class from all images
             images.forEach(img => img.classList.remove('active'));
@@ -441,6 +502,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             currentIndex = index;
+            
+            // Preload next image for smoother experience
+            preloadNextImage();
         }
         
         function nextImage() {
@@ -564,8 +628,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // });
     }
     
-    // Initialize the gallery
-    initStreamTVGallery();
+    // Initialize the gallery - defer for better initial load performance
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => initStreamTVGallery(), { timeout: 2000 });
+    } else {
+        setTimeout(initStreamTVGallery, 200);
+    }
     
     // YouTube Video Link - opens in new tab (no modal needed)
     // The link is already in the HTML, just ensure it works properly
