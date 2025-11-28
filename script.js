@@ -94,6 +94,106 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         
+        // Helper function to wait for layout stability
+        function waitForLayoutStability(callback, maxWait = 1000) {
+            let lastHeight = document.body.scrollHeight;
+            let lastWidth = document.body.scrollWidth;
+            let stableCount = 0;
+            const requiredStableFrames = 3; // Require 3 consecutive stable frames
+            const startTime = Date.now();
+            
+            function checkStability() {
+                const currentHeight = document.body.scrollHeight;
+                const currentWidth = document.body.scrollWidth;
+                const elapsed = Date.now() - startTime;
+                
+                // If layout hasn't changed, increment stable count
+                if (currentHeight === lastHeight && currentWidth === lastWidth) {
+                    stableCount++;
+                } else {
+                    stableCount = 0; // Reset if layout changed
+                }
+                
+                lastHeight = currentHeight;
+                lastWidth = currentWidth;
+                
+                // If layout is stable or max wait time reached, execute callback
+                if (stableCount >= requiredStableFrames || elapsed >= maxWait) {
+                    callback();
+                } else {
+                    requestAnimationFrame(checkStability);
+                }
+            }
+            
+            requestAnimationFrame(checkStability);
+        }
+        
+        // Helper function to preload images in a section
+        function preloadSectionImages(section) {
+            const images = section.querySelectorAll('img');
+            const imagePromises = [];
+            
+            images.forEach(img => {
+                // Check if image is lazy-loaded and not yet loaded
+                if (img.loading === 'lazy' && !img.complete && img.src) {
+                    const promise = new Promise((resolve) => {
+                        if (img.complete) {
+                            resolve();
+                            return;
+                        }
+                        
+                        // Force load by temporarily removing lazy loading attribute
+                        // This tells the browser to load the image immediately
+                        const wasLazy = img.loading === 'lazy';
+                        if (wasLazy) {
+                            img.loading = 'eager';
+                        }
+                        
+                        // Handle data-src if present
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                        }
+                        
+                        // Wait for image to load
+                        const onLoad = () => {
+                            resolve();
+                        };
+                        const onError = () => {
+                            resolve(); // Resolve on error too to not block
+                        };
+                        
+                        img.addEventListener('load', onLoad, { once: true });
+                        img.addEventListener('error', onError, { once: true });
+                        
+                        // Timeout to not block indefinitely (200ms should be enough for most images)
+                        setTimeout(() => {
+                            img.removeEventListener('load', onLoad);
+                            img.removeEventListener('error', onError);
+                            resolve();
+                        }, 300);
+                    });
+                    imagePromises.push(promise);
+                } else if (!img.complete && img.src) {
+                    // Also handle non-lazy images that aren't loaded yet
+                    const promise = new Promise((resolve) => {
+                        if (img.complete) {
+                            resolve();
+                            return;
+                        }
+                        
+                        img.addEventListener('load', resolve, { once: true });
+                        img.addEventListener('error', resolve, { once: true });
+                        setTimeout(resolve, 200);
+                    });
+                    imagePromises.push(promise);
+                }
+            });
+            
+            // Return promise that resolves when all images are loaded or timeout
+            // If no images to load, return immediately resolved promise
+            return imagePromises.length > 0 ? Promise.all(imagePromises) : Promise.resolve();
+        }
+        
         // Close menu when clicking on a menu link - ensure scroll happens after layout stabilizes
         menuItems.forEach(item => {
             const link = item.querySelector('a');
@@ -105,6 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         e.stopPropagation(); // Prevent general anchor handler from also firing
                         
                         const targetId = link.getAttribute('href');
+                        const targetElement = document.querySelector(targetId);
+                        
+                        if (!targetElement) return;
                         
                         // Close menu immediately
                         isMenuOpen = false;
@@ -116,27 +219,38 @@ document.addEventListener('DOMContentLoaded', () => {
                             item.classList.remove('visible');
                         });
                         
-                        // Wait for menu close animation (300ms) and layout to stabilize before scrolling
-                        // This ensures accurate scroll position calculation
+                        // Wait for menu close animation, then preload images and wait for layout stability
                         setTimeout(() => {
-                            requestAnimationFrame(() => {
-                                const targetElement = document.querySelector(targetId);
-                                if (targetElement) {
-                                    // Use scrollIntoView which respects CSS scroll-margin-top
-                                    // This is more reliable than manual position calculation
-                                    targetElement.scrollIntoView({
-                                        behavior: 'smooth',
-                                        block: 'start'
-                                    });
-                                    
-                                    // Track navigation for analytics
-                                    if (typeof gtag !== 'undefined') {
-                                        gtag('event', 'internal_navigation', {
-                                            'event_category': 'Internal Links',
-                                            'event_label': `Clicked: ${targetId}`
+                            // Preload images in the target section to prevent layout shifts
+                            preloadSectionImages(targetElement).then(() => {
+                                // Wait for layout to stabilize (handles any remaining layout shifts)
+                                waitForLayoutStability(() => {
+                                    // Double RAF to ensure everything is ready
+                                    requestAnimationFrame(() => {
+                                        requestAnimationFrame(() => {
+                                            // Calculate position manually for more control
+                                            const nav = document.querySelector('nav');
+                                            const navHeight = nav ? nav.offsetHeight : 100;
+                                            const rect = targetElement.getBoundingClientRect();
+                                            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                                            const targetPosition = rect.top + scrollTop - navHeight;
+                                            
+                                            // Scroll to calculated position
+                                            window.scrollTo({
+                                                top: Math.max(0, targetPosition),
+                                                behavior: 'smooth'
+                                            });
+                                            
+                                            // Track navigation for analytics
+                                            if (typeof gtag !== 'undefined') {
+                                                gtag('event', 'internal_navigation', {
+                                                    'event_category': 'Internal Links',
+                                                    'event_label': `Clicked: ${targetId}`
+                                                });
+                                            }
                                         });
-                                    }
-                                }
+                                    });
+                                }, 300); // Max 300ms wait for layout stability after images load
                             });
                         }, 350); // Wait 350ms for menu animation (300ms) + small buffer
                     }
@@ -594,61 +708,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // StreamTV Image Gallery functionality - defer initialization for performance
+    // StreamTV Image Gallery - Simplified Implementation
     function initStreamTVGallery() {
         const gallery = document.querySelector('.streamtv-gallery');
         if (!gallery) return;
         
+        const container = gallery.querySelector('.gallery-container');
         const images = gallery.querySelectorAll('.gallery-image');
         const prevBtn = gallery.querySelector('.prev-btn');
         const nextBtn = gallery.querySelector('.next-btn');
         const currentImageSpan = gallery.querySelector('.current-image');
         const totalImagesSpan = gallery.querySelector('.total-images');
         
+        if (images.length === 0) return;
+        
         let currentIndex = 0;
-        // let autoPlayInterval; // Removed auto-rotation
         
         // Set total images count
         if (totalImagesSpan) {
             totalImagesSpan.textContent = images.length;
         }
         
-        // Preload next image for smoother transitions
-        function preloadNextImage() {
-            const nextIndex = (currentIndex + 1) % images.length;
-            const nextImg = images[nextIndex];
-            if (nextImg && nextImg.src && !nextImg.complete) {
-                const link = document.createElement('link');
-                link.rel = 'prefetch';
-                link.href = nextImg.src;
-                document.head.appendChild(link);
-            }
-        }
-        
+        // Simple function to show image by index
         function showImage(index) {
             // Remove active class from all images
-            images.forEach(img => {
-                img.classList.remove('active');
-                img.style.transform = 'scale(1.02)';
-            });
+            images.forEach(img => img.classList.remove('active'));
             
-            // Add active class to current image with smooth transition
-            setTimeout(() => {
+            // Add active class to current image
+            if (images[index]) {
                 images[index].classList.add('active');
-                images[index].style.transform = 'scale(1)';
-            }, 50);
+            }
             
-            // Update image counter
+            // Update counter
             if (currentImageSpan) {
                 currentImageSpan.textContent = index + 1;
             }
             
             currentIndex = index;
-            
-            // Preload next image for smoother experience
-            preloadNextImage();
         }
         
+        // Navigation functions
         function nextImage() {
             const nextIndex = (currentIndex + 1) % images.length;
             showImage(nextIndex);
@@ -659,23 +758,11 @@ document.addEventListener('DOMContentLoaded', () => {
             showImage(prevIndex);
         }
         
-        // function startAutoPlay() {
-        //     autoPlayInterval = setInterval(nextImage, 5000); // Change image every 5 seconds
-        // }
-        
-        // function stopAutoPlay() {
-        //     if (autoPlayInterval) {
-        //         clearInterval(autoPlayInterval);
-        //     }
-        // }
-        
-        // Event listeners for overlay buttons
+        // Button event listeners
         if (prevBtn) {
             prevBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 prevImage();
-                // stopAutoPlay();
-                // startAutoPlay(); // Restart autoplay
             });
         }
         
@@ -683,91 +770,75 @@ document.addEventListener('DOMContentLoaded', () => {
             nextBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 nextImage();
-                // stopAutoPlay();
-                // startAutoPlay(); // Restart autoplay
             });
         }
         
-        // Pause autoplay on hover - removed since no autoplay
-        // gallery.addEventListener('mouseenter', stopAutoPlay);
-        // gallery.addEventListener('mouseleave', startAutoPlay);
-        
         // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (gallery.matches(':hover') || gallery.matches(':focus-within')) {
+        if (container) {
+            container.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowLeft') {
                     e.preventDefault();
                     prevImage();
-                    // stopAutoPlay();
-                    // startAutoPlay();
                 } else if (e.key === 'ArrowRight') {
                     e.preventDefault();
                     nextImage();
-                    // stopAutoPlay();
-                    // startAutoPlay();
                 }
-            }
-        });
-        
-        // Touch/swipe support for mobile
-        let touchStartX = 0;
-        let touchEndX = 0;
-        let touchStartY = 0;
-        let touchEndY = 0;
-        
-        gallery.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
-        });
-        
-        gallery.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            touchEndY = e.changedTouches[0].screenY;
-            handleSwipe();
-        });
-        
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            const diffX = touchStartX - touchEndX;
-            const diffY = touchStartY - touchEndY;
+            });
             
-            // Only handle horizontal swipes (ignore vertical scrolling)
-            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > swipeThreshold) {
-                if (diffX > 0) {
-                    // Swipe left - next image
-                    nextImage();
-                } else {
-                    // Swipe right - previous image
-                    prevImage();
+            // Touch/swipe support for mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            container.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            
+            container.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                const diffX = touchStartX - touchEndX;
+                const swipeThreshold = 50;
+                
+                if (Math.abs(diffX) > swipeThreshold) {
+                    if (diffX > 0) {
+                        nextImage(); // Swipe left = next
+                    } else {
+                        prevImage(); // Swipe right = previous
+                    }
                 }
-                // stopAutoPlay();
-                // startAutoPlay();
+            }, { passive: true });
+            
+            // Make container focusable for keyboard navigation
+            container.setAttribute('tabindex', '0');
+        }
+        
+        // Initialize: Check if first image already has active class, if not add it
+        const firstImage = images[0];
+        if (firstImage && !firstImage.classList.contains('active')) {
+            showImage(0);
+        } else {
+            // First image already has active class, just set currentIndex
+            currentIndex = 0;
+            if (currentImageSpan) {
+                currentImageSpan.textContent = 1;
             }
         }
         
-        // Start autoplay - removed
-        // startAutoPlay();
+        // Make container focusable for keyboard navigation
+        container.setAttribute('tabindex', '0');
         
         // Track gallery interactions for analytics
-        gallery.addEventListener('click', (e) => {
-            if (e.target.classList.contains('gallery-btn')) {
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'gallery_interaction', {
-                        'event_category': 'Content Engagement',
-                        'event_label': 'StreamTV Gallery Navigation'
+        if (typeof gtag !== 'undefined') {
+            [prevBtn, nextBtn].forEach(btn => {
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        gtag('event', 'gallery_interaction', {
+                            'event_category': 'Content Engagement',
+                            'event_label': 'StreamTV Gallery Navigation'
+                        });
                     });
                 }
-            }
-        });
-        
-        // Handle visibility change to pause autoplay when tab is not active - removed
-        // document.addEventListener('visibilitychange', () => {
-        //     if (document.hidden) {
-        //         stopAutoPlay();
-        //     } else {
-        //         startAutoPlay();
-        //     }
-        // });
+            });
+        }
     }
     
     // Initialize the gallery - defer for better initial load performance
