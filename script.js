@@ -566,6 +566,22 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize the gallery
     initStreamTVGallery();
+    
+    // YouTube Video Link - opens in new tab (no modal needed)
+    // The link is already in the HTML, just ensure it works properly
+    const youtubeLink = document.querySelector('.youtube-thumbnail-link');
+    if (youtubeLink) {
+        // Track clicks for analytics
+        youtubeLink.addEventListener('click', () => {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'youtube_video_click', {
+                    'event_category': 'Video',
+                    'event_label': 'Stream TV 2025 Video',
+                    'transport_type': 'beacon'
+                });
+            }
+        });
+    }
 });
 
 // Add page load time tracking for performance monitoring
