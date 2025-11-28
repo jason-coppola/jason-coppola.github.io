@@ -20,6 +20,22 @@ function initAOS() {
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize AOS when DOM is ready
     initAOS();
+    
+    // Create scroll progress indicator
+    const scrollProgress = document.createElement('div');
+    scrollProgress.className = 'scroll-progress';
+    document.body.appendChild(scrollProgress);
+    
+    // Update scroll progress
+    function updateScrollProgress() {
+        const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = window.pageYOffset;
+        const progress = (scrolled / windowHeight) * 100;
+        scrollProgress.style.width = progress + '%';
+    }
+    
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+    updateScrollProgress();
     // Initialize Menu Toggle Functionality
     function initMenuToggle() {
         const menuToggle = document.querySelector('.menu-toggle');
@@ -78,14 +94,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         
-        // Close menu when clicking on a menu link
+        // Close menu when clicking on a menu link - close immediately for snappier feel
         menuItems.forEach(item => {
             const link = item.querySelector('a');
             if (link) {
-                link.addEventListener('click', () => {
+                link.addEventListener('click', (e) => {
                     // Only close if it's an internal link
                     if (link.getAttribute('href').startsWith('#')) {
-                        toggleMenu();
+                        // Close menu immediately without waiting
+                        isMenuOpen = false;
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                        menuOverlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                        // Reset menu items for next opening
+                        menuItems.forEach(item => {
+                            item.classList.remove('visible');
+                        });
                     }
                 });
             }
@@ -101,6 +125,54 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize menu toggle
     initMenuToggle();
+    
+    // Smooth scroll enhancement with easing
+    function smoothScrollTo(target, duration = 1000) {
+        const targetElement = document.querySelector(target);
+        if (!targetElement) return;
+        
+        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 80;
+        const startPosition = window.pageYOffset;
+        const distance = targetPosition - startPosition;
+        let startTime = null;
+        
+        function easeInOutCubic(t) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+        
+        function animation(currentTime) {
+            if (startTime === null) startTime = currentTime;
+            const timeElapsed = currentTime - startTime;
+            const progress = Math.min(timeElapsed / duration, 1);
+            const ease = easeInOutCubic(progress);
+            
+            window.scrollTo(0, startPosition + distance * ease);
+            
+            if (timeElapsed < duration) {
+                requestAnimationFrame(animation);
+            }
+        }
+        
+        requestAnimationFrame(animation);
+    }
+    
+    // Enhanced smooth scrolling for navigation links - faster for snappier feel
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            // Use faster scroll duration for snappier feel
+            smoothScrollTo(targetId, 600);
+            
+            // Track internal link clicks for analytics
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'internal_navigation', {
+                    'event_category': 'Internal Links',
+                    'event_label': `Clicked: ${targetId}`
+                });
+            }
+        });
+    });
     
     // Nav logo links - scroll to top
     document.querySelectorAll('.nav-logo-link').forEach(link => {
@@ -121,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Premium Section Animation System
+    // Premium Section Animation System with Parallax
     function initSectionAnimations() {
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         
@@ -143,13 +215,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }, {
-            threshold: 0.15, // Trigger when 15% of section is visible
-            rootMargin: '0px 0px -50px 0px' // Start animation slightly before section enters viewport
+            threshold: 0.12, // Trigger when 12% of section is visible
+            rootMargin: '0px 0px -80px 0px' // Start animation earlier for smoother feel
         });
         
         // Observe all sections with animate-section class
-        document.querySelectorAll('.animate-section').forEach(section => {
+        const sections = document.querySelectorAll('.animate-section');
+        sections.forEach(section => {
             sectionObserver.observe(section);
+            
+            // Check if section is already in viewport on load (for above-the-fold content)
+            const rect = section.getBoundingClientRect();
+            const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+            if (isInViewport) {
+                // Small delay to ensure smooth animation
+                setTimeout(() => {
+                    section.classList.add('animated');
+                }, 100);
+            }
         });
         
         // Animate intro section immediately on load (already visible)
@@ -158,7 +241,41 @@ document.addEventListener('DOMContentLoaded', () => {
             // Small delay to ensure page is loaded
             setTimeout(() => {
                 introSection.classList.add('animated');
-            }, 300);
+            }, 200);
+        }
+        
+        // Subtle parallax effect for logos only (not gallery images to avoid conflicts)
+        if (!prefersReducedMotion) {
+            const parallaxElements = document.querySelectorAll('.logo');
+            let ticking = false;
+            
+            function updateParallax() {
+                parallaxElements.forEach((el) => {
+                    const rect = el.getBoundingClientRect();
+                    const elementTop = rect.top + window.pageYOffset;
+                    const elementHeight = rect.height;
+                    const windowHeight = window.innerHeight;
+                    const scrolled = window.pageYOffset;
+                    
+                    // Only apply parallax when element is in viewport
+                    if (elementTop < scrolled + windowHeight && 
+                        elementTop + elementHeight > scrolled) {
+                        const offset = (scrolled - elementTop + windowHeight) * 0.03;
+                        el.style.transform = `translateY(${offset}px)`;
+                    }
+                });
+                
+                ticking = false;
+            }
+            
+            function requestTick() {
+                if (!ticking) {
+                    window.requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            }
+            
+            window.addEventListener('scroll', requestTick, { passive: true });
         }
     }
     
@@ -170,24 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(initSectionAnimations, 100);
     }
     
-    // Smooth scrolling for navigation links with enhanced tracking
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            document.querySelector(targetId).scrollIntoView({
-                behavior: 'smooth'
-            });
-            
-            // Track internal link clicks for analytics (SEO improvement #7)
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'internal_navigation', {
-                    'event_category': 'Internal Links',
-                    'event_label': `Clicked: ${targetId}`
-                });
-            }
-        });
-    });
+    // Note: Smooth scrolling is now handled above with enhanced easing
 
     // Track section views for analytics (separate from animations) - defer for performance
     if ('requestIdleCallback' in window) {
@@ -491,10 +591,16 @@ document.addEventListener('DOMContentLoaded', () => {
         
         function showImage(index) {
             // Remove active class from all images
-            images.forEach(img => img.classList.remove('active'));
+            images.forEach(img => {
+                img.classList.remove('active');
+                img.style.transform = 'scale(1.02)';
+            });
             
-            // Add active class to current image
-            images[index].classList.add('active');
+            // Add active class to current image with smooth transition
+            setTimeout(() => {
+                images[index].classList.add('active');
+                images[index].style.transform = 'scale(1)';
+            }, 50);
             
             // Update image counter
             if (currentImageSpan) {
