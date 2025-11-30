@@ -106,13 +106,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     /**
      * Update scroll progress bar width based on scroll position
+     * Optimized with requestAnimationFrame for smooth performance
      * @returns {void}
      */
+    let scrollProgressTicking = false;
     function updateScrollProgress() {
-        const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = window.pageYOffset;
-        const progress = (scrolled / windowHeight) * 100;
-        scrollProgress.style.width = progress + '%';
+        if (!scrollProgressTicking) {
+            window.requestAnimationFrame(() => {
+                const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+                const progress = windowHeight > 0 ? (scrolled / windowHeight) * 100 : 0;
+                scrollProgress.style.width = Math.min(100, Math.max(0, progress)) + '%';
+                scrollProgressTicking = false;
+            });
+            scrollProgressTicking = true;
+        }
     }
     
     // Update progress on scroll (using passive listener for better performance)
@@ -218,48 +226,47 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         
                         // Wait for menu close animation, then scroll
-                        // Ensure fonts are loaded and page is fully rendered before calculating
+                        // Optimized scroll calculation to reduce layout thrashing
                         setTimeout(() => {
                             // If page isn't ready yet (first load), wait a bit longer
                             const scrollDelay = pageReady ? 0 : 200;
                             
                             setTimeout(() => {
-                                waitForRender().then(() => {
-                                    // Additional frame to ensure menu animation is complete and layout is stable
-                                    requestAnimationFrame(() => {
-                                        requestAnimationFrame(() => {
-                                            // Get nav height dynamically (accounts for responsive changes)
-                                            const nav = document.querySelector('nav');
-                                            const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 100;
-                                            
-                                            // Get the element's position relative to document
-                                            // Use getBoundingClientRect for accurate positioning
-                                            const rect = targetElement.getBoundingClientRect();
-                                            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                                            
-                                            // Calculate absolute position of element top
-                                            const elementTop = rect.top + scrollTop;
-                                            
-                                            // Calculate target scroll: element top - nav height - small buffer
-                                            // Buffer ensures content isn't hidden under nav
-                                            const buffer = 20; // Extra spacing for visual clarity
-                                            const targetScroll = Math.max(0, elementTop - navHeight - buffer);
-                                            
-                                            // Scroll to target position
-                                            window.scrollTo({
-                                                top: targetScroll,
-                                                behavior: 'smooth'
-                                            });
-                                            
-                                            // Track navigation for analytics
-                                            if (typeof gtag !== 'undefined') {
-                                                gtag('event', 'internal_navigation', {
-                                                    'event_category': 'Internal Links',
-                                                    'event_label': `Clicked: ${targetId}`
-                                                });
-                                            }
-                                        });
+                                // Use requestAnimationFrame for optimal timing
+                                requestAnimationFrame(() => {
+                                    // Batch DOM reads to prevent layout thrashing
+                                    const nav = document.querySelector('nav');
+                                    const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 100;
+                                    
+                                    // Use offsetTop for better performance (no layout recalculation needed)
+                                    let elementTop = targetElement.offsetTop;
+                                    
+                                    // Fallback to getBoundingClientRect if offsetTop is not reliable
+                                    if (elementTop === 0 || isNaN(elementTop)) {
+                                        const rect = targetElement.getBoundingClientRect();
+                                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                                        elementTop = rect.top + scrollTop;
+                                    }
+                                    
+                                    // Calculate target scroll: element top - nav height - small buffer
+                                    const buffer = 20; // Extra spacing for visual clarity
+                                    const targetScroll = Math.max(0, elementTop - navHeight - buffer);
+                                    
+                                    // Scroll to target position
+                                    window.scrollTo({
+                                        top: targetScroll,
+                                        behavior: 'smooth'
                                     });
+                                    
+                                    // Track navigation for analytics (defer to avoid blocking)
+                                    if (typeof gtag !== 'undefined') {
+                                        requestIdleCallback(() => {
+                                            gtag('event', 'internal_navigation', {
+                                                'event_category': 'Internal Links',
+                                                'event_label': `Clicked: ${targetId}`
+                                            });
+                                        }, { timeout: 1000 });
+                                    }
                                 });
                             }, scrollDelay);
                         }, 400); // Wait for menu animation to complete (300ms) + buffer
@@ -281,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     /**
      * Smooth scroll to target element with custom easing
-     * Calculates proper offset to account for fixed navigation bar
+     * Optimized to reduce layout calculations and improve performance
      * @param {string} target - CSS selector for target element
      * @param {number} duration - Animation duration in milliseconds (default: 1000ms)
      * @returns {void}
@@ -290,21 +297,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetElement = document.querySelector(target);
         if (!targetElement) return;
         
-        // Wait for fonts and full render before calculating scroll position
-        waitForRender().then(() => {
-            // Calculate nav height dynamically for accurate offset
+        // Use requestAnimationFrame for optimal timing
+        requestAnimationFrame(() => {
+            // Batch DOM reads to prevent layout thrashing
             const nav = document.querySelector('nav');
             const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 100;
             
-            // Get element position relative to document
-            const rect = targetElement.getBoundingClientRect();
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const elementTop = rect.top + scrollTop;
+            // Prefer offsetTop for better performance (no layout recalculation)
+            let elementTop = targetElement.offsetTop;
+            
+            // Fallback to getBoundingClientRect if offsetTop is not reliable
+            if (elementTop === 0 || isNaN(elementTop)) {
+                const rect = targetElement.getBoundingClientRect();
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                elementTop = rect.top + scrollTop;
+            }
             
             // Calculate target position with buffer for visual clarity
             const buffer = 20;
             const targetPosition = Math.max(0, elementTop - navHeight - buffer);
-            const startPosition = scrollTop;
+            const startPosition = window.pageYOffset || document.documentElement.scrollTop;
             const distance = targetPosition - startPosition;
             let startTime = null;
             
@@ -407,20 +419,20 @@ document.addEventListener('DOMContentLoaded', () => {
         
         /**
          * Intersection Observer for section animations
-         * Triggers when 12% of section is visible
-         * Uses negative rootMargin to start animation earlier for smoother feel
+         * Optimized with better threshold and rootMargin for performance
+         * Triggers when 10% of section is visible for faster perceived performance
          */
         const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('animated');
-                    // Unobserve after animation to prevent re-triggering
+                    // Unobserve after animation to prevent re-triggering and free memory
                     sectionObserver.unobserve(entry.target);
                 }
             });
         }, {
-            threshold: 0.12, // Trigger when 12% of section is visible
-            rootMargin: '0px 0px -80px 0px' // Start animation earlier for smoother feel
+            threshold: 0.1, // Trigger when 10% of section is visible (reduced from 0.12 for better performance)
+            rootMargin: '0px 0px -50px 0px' // Reduced margin for better performance
         });
         
         // Observe all sections with animate-section class
@@ -450,29 +462,51 @@ document.addEventListener('DOMContentLoaded', () => {
         
         /**
          * Subtle parallax effect for logos only
+         * Optimized with Intersection Observer to only update visible elements
          * Not applied to gallery images to avoid conflicts
          * Uses requestAnimationFrame for smooth performance
          */
         if (!prefersReducedMotion) {
             const parallaxElements = document.querySelectorAll('.logo');
             let ticking = false;
+            const visibleElements = new Set();
+            
+            // Use Intersection Observer to track which elements are visible
+            const parallaxObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        visibleElements.add(entry.target);
+                    } else {
+                        visibleElements.delete(entry.target);
+                    }
+                });
+            }, {
+                rootMargin: '50px' // Preload slightly before viewport
+            });
+            
+            parallaxElements.forEach(el => parallaxObserver.observe(el));
             
             /**
-             * Update parallax transform for all logo elements
-             * Only applies when element is in viewport
+             * Update parallax transform for visible logo elements only
+             * Optimized to only process elements in viewport
              * @returns {void}
              */
             function updateParallax() {
-                parallaxElements.forEach((el) => {
+                if (visibleElements.size === 0) {
+                    ticking = false;
+                    return;
+                }
+                
+                const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+                const windowHeight = window.innerHeight;
+                
+                visibleElements.forEach((el) => {
                     const rect = el.getBoundingClientRect();
-                    const elementTop = rect.top + window.pageYOffset;
-                    const elementHeight = rect.height;
-                    const windowHeight = window.innerHeight;
-                    const scrolled = window.pageYOffset;
+                    const elementTop = rect.top + scrolled;
                     
                     // Only apply parallax when element is in viewport
                     if (elementTop < scrolled + windowHeight && 
-                        elementTop + elementHeight > scrolled) {
+                        elementTop + rect.height > scrolled) {
                         const offset = (scrolled - elementTop + windowHeight) * 0.03;
                         el.style.transform = `translateY(${offset}px)`;
                     }
@@ -566,26 +600,35 @@ document.addEventListener('DOMContentLoaded', () => {
      * Lazy loading fallback for older browsers
      * Modern browsers handle lazy loading natively via loading="lazy" attribute
      * This provides fallback support for browsers without native lazy loading
+     * Optimized with better Intersection Observer settings
      */
     if (!('loading' in HTMLImageElement.prototype)) {
         const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-        const lazyImageObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    // Force load for browsers without native support
-                    if (img.dataset.src) {
-                        img.src = img.dataset.src;
-                        img.removeAttribute('data-src');
+        if (lazyImages.length > 0) {
+            const lazyImageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        // Force load for browsers without native support
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                        }
+                        // Unobserve after loading to free memory
+                        lazyImageObserver.unobserve(img);
                     }
-                    lazyImageObserver.unobserve(img);
-                }
+                });
+            }, {
+                // Start loading images slightly before they enter viewport
+                rootMargin: '50px',
+                // Trigger when 10% of image is visible
+                threshold: 0.1
             });
-        });
-        
-        lazyImages.forEach(img => {
-            lazyImageObserver.observe(img);
-        });
+            
+            lazyImages.forEach(img => {
+                lazyImageObserver.observe(img);
+            });
+        }
     }
 
     /**
@@ -818,9 +861,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * StreamTV Image Gallery - Simplified Implementation
+     * StreamTV Image Gallery - Optimized Implementation
      * Handles image carousel with navigation buttons, keyboard controls, and touch/swipe support
-     * Includes analytics tracking for gallery interactions
+     * Includes lazy loading for non-visible images and analytics tracking
      * @returns {void}
      */
     function initStreamTVGallery() {
@@ -837,6 +880,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (images.length === 0) return;
         
         let currentIndex = 0;
+        const loadedImages = new Set([0]); // Track which images have been loaded
         
         // Set total images count
         if (totalImagesSpan) {
@@ -844,8 +888,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         /**
+         * Preload adjacent images for smoother navigation
+         * @param {number} index - Current image index
+         * @returns {void}
+         */
+        function preloadAdjacentImages(index) {
+            const nextIndex = (index + 1) % images.length;
+            const prevIndex = (index - 1 + images.length) % images.length;
+            
+            // Preload next image
+            if (!loadedImages.has(nextIndex) && images[nextIndex]) {
+                const img = images[nextIndex];
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                }
+                loadedImages.add(nextIndex);
+            }
+            
+            // Preload previous image
+            if (!loadedImages.has(prevIndex) && images[prevIndex]) {
+                const img = images[prevIndex];
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                }
+                loadedImages.add(prevIndex);
+            }
+        }
+        
+        /**
          * Show image by index
          * Updates active class, counter, and current index
+         * Preloads adjacent images for smooth navigation
          * @param {number} index - Zero-based index of image to show
          * @returns {void}
          */
@@ -856,6 +931,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Add active class to current image
             if (images[index]) {
                 images[index].classList.add('active');
+                loadedImages.add(index);
             }
             
             // Update counter
@@ -864,6 +940,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             currentIndex = index;
+            
+            // Preload adjacent images for smoother navigation
+            requestIdleCallback(() => preloadAdjacentImages(index), { timeout: 500 });
         }
         
         /**
