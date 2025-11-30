@@ -11,6 +11,23 @@
  */
 
 /**
+ * Helper function to safely use requestIdleCallback with fallback
+ * Provides consistent API for deferring non-critical work across all browsers
+ * @param {Function} callback - Function to execute
+ * @param {Object} options - Options object with timeout property (max wait time in ms)
+ * @returns {void}
+ */
+function safeIdleCallback(callback, options = { timeout: 2000 }) {
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(callback, options);
+  } else {
+    // Fallback for browsers without requestIdleCallback support
+    // Use Math.min to cap fallback delay at 100ms for better UX (don't wait full timeout)
+    setTimeout(callback, Math.min(options.timeout || 2000, 100));
+  }
+}
+
+/**
  * Wait for fonts to load to prevent layout shifts
  * @returns {Promise<void>}
  */
@@ -260,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     
                                     // Track navigation for analytics (defer to avoid blocking)
                                     if (typeof gtag !== 'undefined') {
-                                        requestIdleCallback(() => {
+                                        safeIdleCallback(() => {
                                             gtag('event', 'internal_navigation', {
                                                 'event_category': 'Internal Links',
                                                 'event_label': `Clicked: ${targetId}`
@@ -536,65 +553,37 @@ document.addEventListener('DOMContentLoaded', () => {
      * Uses requestIdleCallback for better performance (defers until browser is idle)
      * Falls back to setTimeout for browsers without requestIdleCallback support
      */
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => initSectionAnimations(), { timeout: 2000 });
-    } else {
-        // Fallback for browsers without requestIdleCallback
-        setTimeout(initSectionAnimations, 100);
-    }
+    safeIdleCallback(() => initSectionAnimations(), { timeout: 2000 });
     
     /**
      * Track section views for analytics
      * Separate from animations - defers for performance
      * Triggers when 30% of section is visible
      */
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => {
-            const analyticsObserver = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && entry.target.id) {
-                        // Track visible sections for engagement metrics
-                        if (typeof gtag !== 'undefined') {
-                            gtag('event', 'section_view', {
-                                'event_category': 'Content Engagement',
-                                'event_label': `Viewed: ${entry.target.id} section`
-                            });
-                        }
-                        // Unobserve after tracking to prevent duplicate events
-                        analyticsObserver.unobserve(entry.target);
+    safeIdleCallback(() => {
+        const analyticsObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting && entry.target.id) {
+                    // Track visible sections for engagement metrics
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'section_view', {
+                            'event_category': 'Content Engagement',
+                            'event_label': `Viewed: ${entry.target.id} section`
+                        });
                     }
-                });
-            }, {
-                threshold: 0.3 // Trigger when 30% of the element is visible
+                    // Unobserve after tracking to prevent duplicate events
+                    analyticsObserver.unobserve(entry.target);
+                }
             });
+        }, {
+            threshold: 0.3 // Trigger when 30% of the element is visible
+        });
 
-            // Observe all sections for analytics
-            document.querySelectorAll('section[id]').forEach((section) => {
-                analyticsObserver.observe(section);
-            });
-        }, { timeout: 3000 });
-    } else {
-        setTimeout(() => {
-            const analyticsObserver = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && entry.target.id) {
-                        if (typeof gtag !== 'undefined') {
-                            gtag('event', 'section_view', {
-                                'event_category': 'Content Engagement',
-                                'event_label': `Viewed: ${entry.target.id} section`
-                            });
-                        }
-                        analyticsObserver.unobserve(entry.target);
-                    }
-                });
-            }, {
-                threshold: 0.3
-            });
-            document.querySelectorAll('section[id]').forEach((section) => {
-                analyticsObserver.observe(section);
-            });
-        }, 500);
-    }
+        // Observe all sections for analytics
+        document.querySelectorAll('section[id]').forEach((section) => {
+            analyticsObserver.observe(section);
+        });
+    }, { timeout: 3000 });
 
     /**
      * Lazy loading fallback for older browsers
@@ -665,186 +654,24 @@ document.addEventListener('DOMContentLoaded', () => {
         resizeTimeout = setTimeout(handleMobileOptimization, 150);
     };
     
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(handleMobileOptimization, { timeout: 1000 });
-    } else {
-        setTimeout(handleMobileOptimization, 100);
-    }
+    safeIdleCallback(handleMobileOptimization, { timeout: 1000 });
     window.addEventListener('resize', throttledMobileOptimization, { passive: true });
 
     /**
-     * Breadcrumb navigation enhancement
-     * Updates active breadcrumb state based on current section visibility
-     * Defers execution for performance
-     * @returns {void}
+     * Note: Breadcrumb navigation code removed - not used in HTML
+     * If breadcrumbs are needed in the future, this code can be restored
      */
-    function updateBreadcrumbs() {
-        const breadcrumbs = document.querySelector('.breadcrumb');
-        if (!breadcrumbs) return;
-        
-        // Get current section from URL or visible section
-        let currentSection = '';
-        const hash = window.location.hash;
-        
-        if (hash) {
-            currentSection = hash.substring(1);
-        } else {
-            // Find the most visible section
-            let maxVisibility = 0;
-            let mostVisibleSection = '';
-            
-            document.querySelectorAll('section[id]').forEach(section => {
-                const rect = section.getBoundingClientRect();
-                const sectionHeight = rect.height;
-                const visibleHeight = Math.min(rect.bottom, window.innerHeight) - 
-                                     Math.max(rect.top, 0);
-                
-                const visibilityRatio = visibleHeight / sectionHeight;
-                
-                if (visibilityRatio > maxVisibility) {
-                    maxVisibility = visibilityRatio;
-                    mostVisibleSection = section.id;
-                }
-            });
-            
-            currentSection = mostVisibleSection;
-        }
-        
-        // Update breadcrumb active state
-        document.querySelectorAll('.breadcrumb li').forEach(li => {
-            const link = li.querySelector('a');
-            if (link && link.getAttribute('href') === `#${currentSection}`) {
-                li.classList.add('active');
-            } else {
-                li.classList.remove('active');
-            }
-        });
-    }
     
     /**
-     * Throttled breadcrumb update handler
-     * Updates breadcrumbs on scroll and hash change
-     * Uses passive listeners and throttling for performance
+     * Note: Schema.org structured data is already included in the HTML
+     * (see index.html lines 373-419) for better SEO and faster initial load.
+     * No JavaScript injection needed.
      */
-    let breadcrumbTimeout;
-    const throttledUpdateBreadcrumbs = () => {
-        clearTimeout(breadcrumbTimeout);
-        breadcrumbTimeout = setTimeout(updateBreadcrumbs, 100);
-    };
-    window.addEventListener('scroll', throttledUpdateBreadcrumbs, { passive: true });
-    window.addEventListener('hashchange', updateBreadcrumbs);
-    // Defer initial update
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(updateBreadcrumbs, { timeout: 1000 });
-    } else {
-        setTimeout(updateBreadcrumbs, 100);
-    }
-    
-    /**
-     * Schema.org structured data enhancement
-     * Injects JSON-LD structured data for better SEO
-     * Only creates script if it doesn't already exist
-     * @returns {void}
-     */
-    function injectStructuredData() {
-        const structuredData = {
-            "@context": "https://schema.org",
-            "@type": "Person",
-            "name": "Jason Coppola",
-            "jobTitle": "Product Management Executive",
-            "description": "Product Management Executive with 15+ years experience in streaming media innovation",
-            "url": "https://www.jasoncoppola.bio",
-            "sameAs": [
-                "https://www.linkedin.com/in/coppolajason/"
-            ],
-            "knowsAbout": ["Product Management", "Streaming Media", "Digital Transformation", "User Experience", "Global Market Expansion"],
-            "worksFor": [
-                {
-                    "@type": "Organization",
-                    "name": "CW Network",
-                    "description": "American television network"
-                }
-            ],
-            "alumniOf": [
-                {
-                    "@type": "Organization",
-                    "name": "Disney",
-                    "description": "Global entertainment company"
-                },
-                {
-                    "@type": "Organization",
-                    "name": "Paramount",
-                    "description": "American global media company"
-                },
-                {
-                    "@type": "Organization",
-                    "name": "WarnerMedia",
-                    "description": "American multinational mass media and entertainment conglomerate"
-                },
-                {
-                    "@type": "Organization",
-                    "name": "HBO",
-                    "description": "American pay television network"
-                }
-            ],
-            "mainEntityOfPage": {
-                "@type": "WebPage",
-                "@id": "https://www.jasoncoppola.bio"
-            }
-        };
-        
-        // Create the script element if it doesn't exist
-        if (!document.querySelector('script[type="application/ld+json"]')) {
-            const script = document.createElement('script');
-            script.type = 'application/ld+json';
-            script.textContent = JSON.stringify(structuredData);
-            document.head.appendChild(script);
-        }
-    }
-    
-    injectStructuredData();
 
     /**
-     * Form submission handling with enhanced tracking
-     * Currently shows alert (replace with actual form submission logic)
-     * Tracks form submissions for conversion analytics
+     * Note: Form submission and KPI code removed - not used in HTML
+     * If these features are needed in the future, this code can be restored
      */
-    const form = document.getElementById('contact-form');
-    if (form) {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Add your form submission logic here
-            alert('Thank you for your message! I will get back to you soon.');
-            form.reset();
-            
-            // Track form submissions for conversion tracking
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'form_submission', {
-                    'event_category': 'Contact',
-                    'event_label': 'Contact Form Submitted'
-                });
-            }
-        });
-    }
-
-    /**
-     * KPI details animation
-     * Handles toggle animations for expandable KPI sections
-     */
-    const details = document.querySelectorAll('.kpi-list');
-    details.forEach(detail => {
-        detail.addEventListener('toggle', () => {
-            if (detail.open) {
-                setTimeout(() => {
-                    detail.querySelector('.kpi-content').style.opacity = '1';
-                    detail.querySelector('.kpi-content').style.transform = 'translateY(0)';
-                }, 10);
-            } else {
-                detail.querySelector('.kpi-content').style.opacity = '0';
-                detail.querySelector('.kpi-content').style.transform = 'translateY(-10px)';
-            }
-        });
-    });
     
     /**
      * Search engine bot detection
@@ -942,7 +769,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentIndex = index;
             
             // Preload adjacent images for smoother navigation
-            requestIdleCallback(() => preloadAdjacentImages(index), { timeout: 500 });
+            safeIdleCallback(() => preloadAdjacentImages(index), { timeout: 500 });
         }
         
         /**
@@ -1060,11 +887,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * Defers execution for better initial load performance
      * Uses requestIdleCallback when available, falls back to setTimeout
      */
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => initStreamTVGallery(), { timeout: 2000 });
-    } else {
-        setTimeout(initStreamTVGallery, 200);
-    }
+    safeIdleCallback(() => initStreamTVGallery(), { timeout: 2000 });
     
     /**
      * YouTube Video Link tracking

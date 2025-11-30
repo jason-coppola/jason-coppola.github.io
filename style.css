@@ -136,6 +136,7 @@ section .grid {
 }
 
 /* Ensure iframes can render properly - override any constraints */
+/* Using !important to override third-party iframe styles that may conflict */
 section iframe {
   max-width: 100%;
   display: block;
@@ -391,36 +392,7 @@ nav h1:last-of-type {
   }
 }
 
-/* Breadcrumb Navigation styles - for SEO improvement #12 */
-nav.breadcrumb {
-  position: relative; 
-  background: transparent;
-  padding: 10px 20px;
-  margin-top: 60px; /* To appear below the fixed main nav */
-}
-
-.breadcrumb ol {
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.breadcrumb li {
-  display: inline-block;
-  margin-right: 8px;
-}
-
-.breadcrumb li:after {
-  content: ">";
-  margin-left: 8px;
-}
-
-.breadcrumb li:last-child:after {
-  content: "";
-  margin-left: 0;
-}
+/* Note: Breadcrumb navigation styles removed - not used in HTML */
 
 .content-wrapper {
   margin: 0 20px;
@@ -616,16 +588,7 @@ h3 {
   line-height: 1.4;
 }
 
-/* Enhanced internal links styling - for SEO improvement #7 */
-a.internal-link {
-  text-decoration: underline;
-  color: #101010;
-  font-weight: 500;
-}
-
-a.internal-link:hover {
-  color: #444;
-}
+/* Note: Internal link styles removed - not used in HTML */
 
 p, li {
   line-height: 1.7;
@@ -1053,6 +1016,7 @@ body {
 .data-set li {
   display: inline-block;
   flex: 1;
+  /* Using !important to ensure data cards are always visible, overriding animation states */
   opacity: 1 !important;
   transform: translateY(0) !important;
   padding: 24px;
@@ -1352,7 +1316,8 @@ section[id] {
     height: 100% !important;
   }
   
-  /* Force first image to be visible on mobile */
+  /* Force first image to be visible on mobile - critical for gallery functionality */
+  /* Using !important to override JavaScript-controlled visibility states */
   .gallery-image:first-child {
     display: block !important;
     opacity: 1 !important;
@@ -1526,6 +1491,7 @@ section[id] {
 }
 
 /* Show first image by default - highest priority */
+/* Using !important to ensure gallery always shows at least one image, even before JS loads */
 .gallery-image:first-child {
   display: block !important;
   opacity: 1 !important;
@@ -1533,6 +1499,7 @@ section[id] {
 }
 
 /* Show active image - will override first-child when JavaScript runs */
+/* Using !important to ensure active image is always visible, overriding default hidden state */
 .gallery-image.active {
   display: block !important;
   opacity: 1 !important;
@@ -1541,6 +1508,7 @@ section[id] {
 }
 
 /* Ensure first image with active class is always visible */
+/* Using !important for maximum specificity to guarantee visibility */
 .gallery-image:first-child.active {
   display: block !important;
   opacity: 1 !important;
