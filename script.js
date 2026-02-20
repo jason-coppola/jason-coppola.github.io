@@ -103,6 +103,37 @@ function markPageReady() {
 }
 
 /**
+ * Resolve a hash value (e.g. "#about") to a DOM element safely.
+ * Returns null for invalid or missing hashes.
+ * @param {string} hash
+ * @returns {Element|null}
+ */
+function getElementFromHash(hash) {
+    if (!hash || typeof hash !== 'string') return null;
+    if (hash === '#') return document.documentElement;
+    try {
+        return document.querySelector(hash);
+    } catch (error) {
+        return null;
+    }
+}
+
+/**
+ * Calculate the final scroll destination for a section, accounting for fixed nav.
+ * @param {Element} targetElement
+ * @returns {number}
+ */
+function getScrollTargetY(targetElement) {
+    const nav = document.querySelector('body > nav');
+    const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 100;
+    const buffer = 16;
+    const rect = targetElement.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const elementTop = rect.top + scrollTop;
+    return Math.max(0, elementTop - navHeight - buffer);
+}
+
+/**
  * Main initialization - runs when DOM is ready
  * Removed blocking animations for faster initial render
  */
@@ -139,10 +170,29 @@ document.addEventListener('DOMContentLoaded', () => {
             scrollProgressTicking = true;
         }
     }
+
+    /**
+     * Update navigation visual state based on scroll position.
+     * Adds compact/sticky treatment after the user leaves the hero.
+     * @returns {void}
+     */
+    const siteNav = document.querySelector('body > nav');
+    let navStateTicking = false;
+    function updateNavState() {
+        if (!siteNav || navStateTicking) return;
+        navStateTicking = true;
+        window.requestAnimationFrame(() => {
+            const y = window.pageYOffset || document.documentElement.scrollTop;
+            siteNav.classList.toggle('scrolled', y > 24);
+            navStateTicking = false;
+        });
+    }
     
     // Update progress on scroll (using passive listener for better performance)
     window.addEventListener('scroll', updateScrollProgress, { passive: true });
+    window.addEventListener('scroll', updateNavState, { passive: true });
     updateScrollProgress();
+    updateNavState();
     
     /**
      * Menu Toggle Functionality
@@ -158,6 +208,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!menuToggle || !menuOverlay) return;
         
         let isMenuOpen = false;
+
+        /**
+         * Close the menu and reset animated item state.
+         * @returns {void}
+         */
+        function closeMenu() {
+            isMenuOpen = false;
+            menuToggle.setAttribute('aria-expanded', 'false');
+            menuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+            menuItems.forEach(item => {
+                item.classList.remove('visible');
+            });
+        }
         
         /**
          * Toggle menu open/closed state
@@ -175,11 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Animate menu items when menu opens
                 animateMenuItems();
             } else {
-                document.body.style.overflow = '';
-                // Reset menu items for next opening
-                menuItems.forEach(item => {
-                    item.classList.remove('visible');
-                });
+                closeMenu();
             }
         }
         
@@ -222,71 +282,45 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = item.querySelector('a');
             if (link) {
                 link.addEventListener('click', (e) => {
-                    // Only close if it's an internal link
-                    if (link.getAttribute('href').startsWith('#')) {
+                    const href = link.getAttribute('href') || '';
+
+                    // Internal links scroll to a section; external links just close the menu.
+                    if (href.startsWith('#')) {
                         e.preventDefault();
                         e.stopPropagation(); // Prevent general anchor handler from also firing
                         
-                        const targetId = link.getAttribute('href');
-                        const targetElement = document.querySelector(targetId);
+                        const targetElement = getElementFromHash(href);
                         
-                        if (!targetElement) return;
+                        if (!targetElement) {
+                            closeMenu();
+                            return;
+                        }
                         
-                        // Close menu immediately
-                        isMenuOpen = false;
-                        menuToggle.setAttribute('aria-expanded', 'false');
-                        menuOverlay.classList.remove('active');
-                        document.body.style.overflow = '';
-                        // Reset menu items for next opening
-                        menuItems.forEach(item => {
-                            item.classList.remove('visible');
-                        });
+                        closeMenu();
                         
                         // Wait for menu close animation, then scroll
-                        // Optimized scroll calculation to reduce layout thrashing
+                        // Keep a short delay so the panel transition completes cleanly.
                         setTimeout(() => {
                             // If page isn't ready yet (first load), wait a bit longer
-                            const scrollDelay = pageReady ? 0 : 200;
+                            const scrollDelay = pageReady ? 0 : 140;
                             
                             setTimeout(() => {
-                                // Use requestAnimationFrame for optimal timing
-                                requestAnimationFrame(() => {
-                                    // Batch DOM reads to prevent layout thrashing
-                                    const nav = document.querySelector('nav');
-                                    const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 100;
-                                    
-                                    // Use offsetTop for better performance (no layout recalculation needed)
-                                    let elementTop = targetElement.offsetTop;
-                                    
-                                    // Fallback to getBoundingClientRect if offsetTop is not reliable
-                                    if (elementTop === 0 || isNaN(elementTop)) {
-                                        const rect = targetElement.getBoundingClientRect();
-                                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                                        elementTop = rect.top + scrollTop;
-                                    }
-                                    
-                                    // Calculate target scroll: element top - nav height - small buffer
-                                    const buffer = 20; // Extra spacing for visual clarity
-                                    const targetScroll = Math.max(0, elementTop - navHeight - buffer);
-                                    
-                                    // Scroll to target position
-                                    window.scrollTo({
-                                        top: targetScroll,
-                                        behavior: 'smooth'
-                                    });
-                                    
-                                    // Track navigation for analytics (defer to avoid blocking)
-                                    if (typeof gtag !== 'undefined') {
-                                        safeIdleCallback(() => {
-                                            gtag('event', 'internal_navigation', {
-                                                'event_category': 'Internal Links',
-                                                'event_label': `Clicked: ${targetId}`
-                                            });
-                                        }, { timeout: 1000 });
-                                    }
-                                });
+                                smoothScrollTo(targetElement, 650);
+                                
+                                // Track navigation for analytics (defer to avoid blocking)
+                                if (typeof gtag !== 'undefined') {
+                                    safeIdleCallback(() => {
+                                        gtag('event', 'internal_navigation', {
+                                            'event_category': 'Internal Links',
+                                            'event_label': `Clicked: ${href}`
+                                        });
+                                    }, { timeout: 1000 });
+                                }
                             }, scrollDelay);
-                        }, 400); // Wait for menu animation to complete (300ms) + buffer
+                        }, 320);
+                    } else {
+                        // External links should also close the menu for a clean state.
+                        closeMenu();
                     }
                 });
             }
@@ -306,36 +340,26 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Smooth scroll to target element with custom easing
      * Optimized to reduce layout calculations and improve performance
-     * @param {string} target - CSS selector for target element
+     * @param {string|Element} target - CSS selector or DOM element for target
      * @param {number} duration - Animation duration in milliseconds (default: 1000ms)
      * @returns {void}
      */
     function smoothScrollTo(target, duration = 1000) {
-        const targetElement = document.querySelector(target);
+        const targetElement = typeof target === 'string' ? getElementFromHash(target) : target;
         if (!targetElement) return;
         
         // Use requestAnimationFrame for optimal timing
         requestAnimationFrame(() => {
-            // Batch DOM reads to prevent layout thrashing
-            const nav = document.querySelector('nav');
-            const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 100;
-            
-            // Prefer offsetTop for better performance (no layout recalculation)
-            let elementTop = targetElement.offsetTop;
-            
-            // Fallback to getBoundingClientRect if offsetTop is not reliable
-            if (elementTop === 0 || isNaN(elementTop)) {
-                const rect = targetElement.getBoundingClientRect();
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                elementTop = rect.top + scrollTop;
-            }
-            
-            // Calculate target position with buffer for visual clarity
-            const buffer = 20;
-            const targetPosition = Math.max(0, elementTop - navHeight - buffer);
+            const targetPosition = getScrollTargetY(targetElement);
             const startPosition = window.pageYOffset || document.documentElement.scrollTop;
             const distance = targetPosition - startPosition;
             let startTime = null;
+
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReducedMotion || duration <= 0) {
+                window.scrollTo(0, targetPosition);
+                return;
+            }
             
             /**
              * Cubic easing function for smooth animation
@@ -379,39 +403,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (this.closest('.staggered-item') || this.closest('.menu-nav')) {
                 return;
             }
-            
-            e.preventDefault();
+
             const targetId = this.getAttribute('href');
+            const targetElement = getElementFromHash(targetId);
+            if (!targetElement) return;
+
+            e.preventDefault();
             // Use faster scroll duration for snappier feel
-            smoothScrollTo(targetId, 600);
+            smoothScrollTo(targetElement, 600);
             
             // Track internal link clicks for analytics
             if (typeof gtag !== 'undefined') {
                 gtag('event', 'internal_navigation', {
                     'event_category': 'Internal Links',
                     'event_label': `Clicked: ${targetId}`
-                });
-            }
-        });
-    });
-    
-    /**
-     * Nav logo links - scroll to top when clicked
-     * Tracks logo clicks for analytics
-     */
-    document.querySelectorAll('.nav-logo-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-            
-            // Track logo click for analytics
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'logo_click', {
-                    'event_category': 'Navigation',
-                    'event_label': 'Scroll to top'
                 });
             }
         });
@@ -483,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
          * Not applied to gallery images to avoid conflicts
          * Uses requestAnimationFrame for smooth performance
          */
-        if (!prefersReducedMotion) {
+        if (!prefersReducedMotion && window.innerWidth >= 1024) {
             const parallaxElements = document.querySelectorAll('.logo');
             let ticking = false;
             const visibleElements = new Set();
@@ -524,7 +529,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Only apply parallax when element is in viewport
                     if (elementTop < scrolled + windowHeight && 
                         elementTop + rect.height > scrolled) {
-                        const offset = (scrolled - elementTop + windowHeight) * 0.03;
+                        // Keep motion subtle to avoid competing with primary scroll.
+                        const rawOffset = (scrolled - elementTop + windowHeight) * 0.02;
+                        const offset = Math.max(-18, Math.min(18, rawOffset));
                         el.style.transform = `translateY(${offset}px)`;
                     }
                 });

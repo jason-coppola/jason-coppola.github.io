@@ -78,6 +78,7 @@ html {
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   color: #101010;
+  line-height: 1.4;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -87,8 +88,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  /* Prevent layout shifts while fonts load */
-  font-display: swap;
 }
 
 /* ====================================================
@@ -124,10 +123,7 @@ section {
   overflow-x: hidden;
   box-sizing: border-box;
   position: relative;
-  transition: all 0.3s ease;
-  /* Performance optimization: use content-visibility for off-screen sections */
-  content-visibility: auto;
-  contain-intrinsic-size: auto 500px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Ensure proper alignment of content within sections */
@@ -147,7 +143,7 @@ section iframe {
 /* ====================================================
    NAVIGATION - Fixed header with menu toggle
    ==================================================== */
-nav {
+body > nav {
   width: 100%;
   max-width: 100%;
   position: fixed;
@@ -190,11 +186,11 @@ nav {
   contain: layout style paint;
 }
 
-nav h1:first-of-type {
+.nav-brand {
   flex: 0 0 auto;
 }
 
-nav h1:last-of-type {
+.nav-subtitle {
   flex: 0 0 auto;
 }
 
@@ -260,6 +256,7 @@ nav h1:last-of-type {
   width: 33.33%;
   max-width: 500px;
   height: 100vh;
+  height: 100dvh;
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
@@ -369,12 +366,16 @@ nav h1:last-of-type {
 
 /* Extra padding for very small screens where nav might be taller */
 @media screen and (max-width: 480px) {
-  nav {
+  body > nav {
     padding: 12px 20px;
   }
   
-  nav h1 {
-    font-size: 0.85em;
+  .nav-brand {
+    font-size: 0.9em;
+  }
+
+  .nav-subtitle {
+    display: block;
   }
   
   .menu-nav {
@@ -398,6 +399,8 @@ nav h1:last-of-type {
   margin: 0 20px;
   max-width: 100%;
   box-sizing: border-box;
+  padding-left: clamp(10px, 2.2vw, 28px);
+  padding-right: clamp(10px, 2.2vw, 28px);
 }
 
 /* Grid Layout */
@@ -479,13 +482,15 @@ nav h1:last-of-type {
 }
 
 .logo {
-  height: 40px;
-  max-width: 200px;
+  height: clamp(34px, 3vw, 42px);
+  max-width: 220px;
   width: auto;
   object-fit: contain;
+  display: block;
+  margin-left: clamp(8px, 1vw, 16px);
   transition: opacity 0.3s ease, transform 0.3s ease;
   filter: brightness(1);
-  opacity: 0.9;
+  opacity: 0.95;
   /* Performance optimization: optimize parallax transforms */
   will-change: transform;
   /* Optimize image rendering */
@@ -495,12 +500,13 @@ nav h1:last-of-type {
 
 .logo:hover {
   opacity: 1;
+  transform: translateY(-1px);
 }
 
 hr {
     border: 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-    margin: 60px 0;
+    border-top: 1px solid rgba(22, 34, 53, 0.08);
+    margin: 0;
     position: relative;
 }
 
@@ -510,30 +516,47 @@ hr::after {
     top: -1px;
     left: 50%;
     transform: translateX(-50%);
-    width: 60px;
+    width: 120px;
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(22, 34, 53, 0.22) 50%, transparent 100%);
+}
+
+/* Remove section separators between Background, Publications, and Speaking */
+#background + hr,
+#publications + hr {
+  display: none;
 }
 
 /* ====================================================
    TYPOGRAPHY - Headings and text styles
    ==================================================== */
-nav h1 {
+.nav-brand,
+.nav-subtitle {
   font-size: 1em;
-  font-weight: normal;
+  font-weight: 500;
+  line-height: 1.2;
 }
 
-nav h1 a.nav-logo-link {
+.nav-brand {
   color: #101010;
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-block;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.01em;
   position: relative;
+  white-space: nowrap;
 }
 
-nav h1 a.nav-logo-link::after {
+.nav-subtitle {
+  color: #4a5260;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.78em;
+  white-space: nowrap;
+}
+
+.nav-brand::after {
   content: '';
   position: absolute;
   bottom: -2px;
@@ -544,23 +567,17 @@ nav h1 a.nav-logo-link::after {
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-nav h1 a.nav-logo-link:hover {
+.nav-brand:hover {
   color: #4a4a4a;
   transform: translateY(-1px);
 }
 
-nav h1 a.nav-logo-link:hover::after {
+.nav-brand:hover::after {
   width: 100%;
 }
 
-nav h1 a.nav-logo-link:active {
+.nav-brand:active {
   transform: translateY(0);
-}
-
-nav h2 {
-  font-size: 1em;
-  width: 50%;
-  font-weight: normal;
 }
 
 /* Heading hierarchy - Fixed for SEO */
@@ -611,7 +628,9 @@ p + h3 {
 #intro {
   padding: 0;
   min-height: 100vh;
+  min-height: 100svh;
   height: 100vh;
+  height: 100svh;
   display: flex;
   align-items: center;
   position: relative;
@@ -699,7 +718,9 @@ body {
 @media screen and (min-width: 768px) {
   #intro {
     min-height: 100vh;
+    min-height: 100svh;
     height: 100vh;
+    height: 100svh;
   }
   
   .intro-container {
@@ -720,7 +741,9 @@ body {
 @media screen and (min-width: 1024px) {
   #intro {
     min-height: 100vh;
+    min-height: 100svh;
     height: 100vh;
+    height: 100svh;
   }
   
   .intro-container {
@@ -743,7 +766,9 @@ body {
 @media screen and (max-width: 767px) {
   #intro {
     min-height: 100vh;
+    min-height: 100svh;
     height: 100vh;
+    height: 100svh;
   }
   
   .intro-container {
@@ -979,20 +1004,35 @@ body {
 .gallery.two img {
   width: 100%;
   height: auto;
+  aspect-ratio: 16 / 9;
   border-radius: 12px;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   object-fit: contain;
   background: transparent;
+  border: 0;
+  padding: 0;
   display: block;
-  max-height: 500px;
   margin: 0 auto;
   /* Performance optimization: optimize image rendering */
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
   /* Only use will-change during hover */
   will-change: transform, box-shadow;
+}
+
+/* Reduce visible white plate effect for these two assets on gray sections */
+#disney .gallery.one img,
+#warnermedia .gallery.one img {
+  mix-blend-mode: multiply;
+  filter: contrast(1.03) saturate(1.03);
+  box-shadow: none;
+}
+
+#disney .gallery.one img:hover,
+#warnermedia .gallery.one img:hover {
+  box-shadow: none;
 }
 
 .gallery.one img:hover,
@@ -1185,36 +1225,40 @@ footer {
   margin-top: 0;
 }
 
-/* Scroll margin for all sections to account for fixed nav */
-section[id] {
-  scroll-margin-top: 100px;
-}
-
-/* Responsive scroll margin adjustments */
-@media screen and (max-width: 768px) {
-  section[id] {
-    scroll-margin-top: 90px;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  section[id] {
-    scroll-margin-top: 80px;
-  }
-}
-
 /* ====================================================
    RESPONSIVE DESIGN - Mobile and tablet breakpoints
    ==================================================== */
 
-/* Mobile Optimization - for SEO improvement */
+/* Mobile layout optimization */
 @media screen and (max-width: 768px) {
-  nav {
-    padding: 16px 20px;
+  body > nav {
+    padding: 12px 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "brand menu"
+      "subtitle menu";
+    row-gap: 2px;
+    align-items: center;
   }
   
-  nav h1 {
+  .nav-brand {
+    grid-area: brand;
     font-size: 0.9em;
+  }
+
+  .nav-subtitle {
+    grid-area: subtitle;
+    display: block;
+    font-size: 0.68em;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    opacity: 0.92;
+  }
+
+  .menu-toggle {
+    grid-area: menu;
+    justify-self: end;
   }
   
   section {
@@ -1257,16 +1301,18 @@ section[id] {
     width: 100%;
     margin-bottom: 20px;
     object-fit: contain;
+    aspect-ratio: 16 / 10;
     display: block;
-    max-height: 400px;
+    max-height: none;
     margin: 0 auto 20px auto;
   }
   
   .gallery.one img {
     width: 100%;
     object-fit: contain;
+    aspect-ratio: 16 / 10;
     display: block;
-    max-height: 400px;
+    max-height: none;
     margin: 0 auto;
   }
   
@@ -1390,18 +1436,19 @@ section[id] {
 
   .gallery.two img {
     width: 100%;
-    height: 500px;
+    height: auto;
     display: block;
     object-fit: contain;
+    aspect-ratio: 16 / 9;
     margin: 0 auto;
     object-position: center;
   }
   
   .gallery.one img {
-    max-height: 500px;
     width: 100%;
     height: auto;
     object-fit: contain;
+    aspect-ratio: 16 / 9;
     margin: 0 auto;
     display: block;
   }
@@ -1427,7 +1474,7 @@ section[id] {
 
 /* Print styles - optimizes layout for printing */
 @media print {
-  nav {
+  body > nav {
     position: relative;
   }
   
@@ -1461,7 +1508,7 @@ section[id] {
   padding-bottom: 56.25%; /* 16:9 aspect ratio */
   border-radius: 16px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-  background: #f5f5f5;
+  background: transparent;
   overflow: hidden;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
   display: block;
@@ -1785,7 +1832,7 @@ section[id] {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
   transition: transform 0.3s ease, 
               box-shadow 0.3s ease;
-  background: #f5f5f5;
+  background: transparent;
 }
 
 .youtube-thumbnail-link:hover .youtube-thumbnail {
@@ -1889,8 +1936,260 @@ section[id] {
   .youtube-thumbnail {
     border-radius: 12px;
   }
-  
+
   .youtube-thumbnail-img {
     border-radius: 12px;
+  }
+}
+
+/* ====================================================
+   MODERN FLUIDITY REFINEMENTS
+   Design and scrolling polish across all sections
+   ==================================================== */
+
+:root {
+  --surface: #ffffff;
+  --surface-soft: #f6f8fb;
+  --text-primary: #101010;
+  --text-muted: #5f646d;
+  --section-space: clamp(72px, 10vw, 136px);
+  --nav-offset: 112px;
+  --radius-lg: 20px;
+  --elev-soft: 0 12px 40px rgba(10, 18, 35, 0.08);
+}
+
+html {
+  scroll-padding-top: var(--nav-offset);
+}
+
+body {
+  background:
+    radial-gradient(circle at 8% 10%, rgba(188, 205, 228, 0.18) 0%, transparent 38%),
+    radial-gradient(circle at 85% 6%, rgba(223, 233, 246, 0.24) 0%, transparent 34%),
+    var(--surface);
+  color: var(--text-primary);
+  scrollbar-gutter: stable both-edges;
+}
+
+body > nav {
+  border-bottom: 1px solid rgba(10, 18, 35, 0.08);
+}
+
+body > nav.scrolled {
+  padding-top: 14px;
+  padding-bottom: 14px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 10px 30px rgba(10, 18, 35, 0.1);
+}
+
+section {
+  padding: var(--section-space) 0;
+}
+
+section:not(#intro):not(#background):not(#publications)::after {
+  content: '';
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(22, 34, 53, 0.14) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+#intro {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.grid {
+  row-gap: clamp(20px, 3vw, 34px);
+}
+
+.content-wrapper {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.col-6 p {
+  color: var(--text-muted);
+  max-width: 62ch;
+}
+
+.black .col-6 p,
+.black .data-set .label {
+  color: rgba(245, 247, 252, 0.86);
+}
+
+.gray .col-6 p,
+#background p,
+#publications p,
+#speaker p {
+  color: #4a5260;
+}
+
+.black,
+.gray {
+  overflow: clip;
+}
+
+.black {
+  background:
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.06) 0%, transparent 34%),
+    linear-gradient(180deg, #090c12 0%, #171d28 100%);
+}
+
+.gray {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(152, 181, 214, 0.14) 0%, transparent 32%),
+    linear-gradient(180deg, #f7f9fc 0%, #eff3f9 100%);
+}
+
+#background .content-wrapper,
+#publications .content-wrapper,
+#speaker .content-wrapper {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(22, 34, 53, 0.08);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elev-soft);
+  padding: clamp(24px, 4vw, 44px);
+}
+
+#publications a,
+#speaker a {
+  text-underline-offset: 4px;
+}
+
+.gallery {
+  padding: clamp(36px, 5vw, 68px) 0;
+}
+
+.gallery.one img,
+.gallery.two img {
+  border-radius: 16px;
+  box-shadow: 0 12px 38px rgba(7, 13, 28, 0.15);
+}
+
+.gallery.one img:hover,
+.gallery.two img:hover {
+  transform: translateY(-6px) scale(1.008);
+}
+
+.data-set li {
+  border-radius: 16px;
+}
+
+footer {
+  background: linear-gradient(180deg, rgba(244, 247, 252, 0) 0%, rgba(244, 247, 252, 0.8) 100%);
+}
+
+section[id] {
+  scroll-margin-top: var(--nav-offset);
+}
+
+/* Keep these long-form sections visually tighter as one grouped narrative */
+#background,
+#publications,
+#speaker {
+  padding-top: clamp(26px, 2.6vw, 36px);
+  padding-bottom: clamp(26px, 2.6vw, 36px);
+}
+
+/* Tighten spacing between company sections in achievements flow */
+#achievements,
+#disney,
+#paramount,
+#warnermedia,
+#hbo {
+  padding-top: clamp(26px, 2.8vw, 42px);
+  padding-bottom: clamp(44px, 4vw, 60px);
+}
+
+/* Consistent inner padding/rhythm for all achievement company sections */
+#achievements .content-wrapper,
+#disney .content-wrapper,
+#paramount .content-wrapper,
+#warnermedia .content-wrapper,
+#hbo .content-wrapper {
+  padding-left: clamp(20px, 3vw, 48px);
+  padding-right: clamp(20px, 3vw, 48px);
+}
+
+#achievements .grid,
+#disney .grid,
+#paramount .grid,
+#warnermedia .grid,
+#hbo .grid {
+  row-gap: clamp(18px, 2.6vw, 34px);
+}
+
+#achievements .col-6,
+#disney .col-6,
+#paramount .col-6,
+#warnermedia .col-6,
+#hbo .col-6 {
+  padding-left: clamp(2px, 0.5vw, 8px);
+  padding-right: clamp(2px, 0.5vw, 8px);
+  box-sizing: border-box;
+}
+
+#achievements .logo,
+#disney .logo,
+#paramount .logo,
+#warnermedia .logo,
+#hbo .logo {
+  margin-left: 0;
+  margin-bottom: clamp(14px, 1.8vw, 22px);
+}
+
+#achievements .gallery,
+#disney .gallery,
+#paramount .gallery,
+#warnermedia .gallery,
+#hbo .gallery {
+  padding: clamp(30px, 4vw, 52px) 0;
+}
+
+#achievements .data-set,
+#disney .data-set,
+#paramount .data-set,
+#warnermedia .data-set,
+#hbo .data-set {
+  margin-top: clamp(20px, 2.4vw, 34px);
+}
+
+@media screen and (max-width: 768px) {
+  :root {
+    --nav-offset: 96px;
+  }
+
+  .content-wrapper {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  #background .content-wrapper,
+  #publications .content-wrapper,
+  #speaker .content-wrapper {
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  section:not(#intro):not(#background):not(#publications)::after {
+    left: 20px;
+    right: 20px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  :root {
+    --nav-offset: 84px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body > nav.scrolled {
+    transition: none;
   }
 }

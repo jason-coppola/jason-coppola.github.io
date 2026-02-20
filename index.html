@@ -70,9 +70,9 @@
     <!-- ====================================================
          NAVIGATION - Fixed header with menu toggle
          ==================================================== -->
-    <nav>
-      <h1><a href="#" class="nav-logo-link">Jason Coppola</a></h1>
-      <h1><a href="#" class="nav-logo-link">Product Executive</a></h1>
+    <nav aria-label="Primary">
+      <a href="#intro" class="nav-logo-link nav-brand">Jason Coppola</a>
+      <span class="nav-subtitle">Product Executive</span>
       <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
         <span class="menu-icon">
           <span class="menu-line"></span>
@@ -84,7 +84,7 @@
 
     <!-- Expandable Menu Overlay - Slide-out navigation panel -->
     <div class="menu-overlay" id="menuOverlay">
-      <nav class="menu-nav">
+      <nav class="menu-nav" aria-label="Section Navigation">
         <ul class="staggered-menu">
           <li class="staggered-item"><a href="#achievements">Achievements</a></li>
           <li class="staggered-item"><a href="#background">Background</a></li> 
@@ -148,7 +148,7 @@
     </section>
 
     <!-- Disney Experience Section -->
-    <section class="gray animate-section">
+    <section id="disney" class="gray animate-section">
       <div class="grid content-wrapper">
         <div class="col-6 start">
           <img class="logo" src="./images/Disney_Logo.svg" alt="Disney Logo - Global entertainment company where Jason Coppola managed technical account teams" loading="lazy" />
@@ -174,7 +174,7 @@
     </section>
 
     <!-- Paramount Experience Section -->
-    <section class="black animate-section">
+    <section id="paramount" class="black animate-section">
       <div class="grid content-wrapper">
         <div class="col-6 start">
           <img class="logo" src="./images/Paramount_Logo.svg" alt="Paramount Logo - Global media company where Jason Coppola led international expansion" loading="lazy" />
@@ -200,7 +200,7 @@
     </section>
 
     <!-- WarnerMedia Experience Section -->
-    <section class="gray animate-section">
+    <section id="warnermedia" class="gray animate-section">
       <div class="grid content-wrapper">
         <div class="col-6 start">
           <img class="logo" src="./images/WarnerMedia_Logo.svg" alt="WarnerMedia Logo - Media conglomerate where Jason Coppola led product initiatives for HBO MAX" loading="lazy" />
@@ -224,7 +224,7 @@
     </section>
 
     <!-- HBO Experience Section -->
-    <section class="black animate-section">
+    <section id="hbo" class="black animate-section">
       <div class="grid content-wrapper">
         <div class="col-6 start">
           <img class="logo" src="./images/HBO_Logo.svg" alt="HBO Logo - Premium network where Jason Coppola managed digital product offerings and VR experiences" loading="lazy" />
