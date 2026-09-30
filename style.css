@@ -2127,6 +2127,7 @@ section[id] {
 }
 
 /* Tighten spacing between company sections in achievements flow */
+#wsop,
 #achievements,
 #disney,
 #paramount,
@@ -2137,6 +2138,7 @@ section[id] {
 }
 
 /* Consistent inner padding/rhythm for all achievement company sections */
+#wsop .content-wrapper,
 #achievements .content-wrapper,
 #disney .content-wrapper,
 #paramount .content-wrapper,
@@ -2187,6 +2189,177 @@ section[id] {
 #warnermedia .data-set,
 #hbo .data-set {
   margin-top: clamp(20px, 2.4vw, 34px);
+}
+
+/* Current WSOP work shares the company sections' width and vertical rhythm. */
+.wsop-intro,
+.wsop-products {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+}
+
+.wsop-intro {
+  align-items: end;
+  padding-top: 12px;
+}
+
+#wsop .wsop-eyebrow {
+  margin: 0 0 16px;
+  color: #5f526e;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.wsop-logo {
+  display: block;
+  width: 135px;
+  height: 50px;
+  object-fit: contain;
+  filter: grayscale(1) invert(1);
+  margin-bottom: 24px;
+}
+
+#wsop h2 {
+  font-size: clamp(1.9rem, 3.3vw, 3rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.045em;
+}
+
+#wsop .wsop-summary,
+.wsop-product > p:not(.wsop-eyebrow) {
+  color: #4a5260;
+  font-size: 1rem;
+  line-height: 1.75;
+  max-width: 62ch;
+  margin: 0;
+}
+
+.wsop-products {
+  margin-top: clamp(30px, 4vw, 52px);
+}
+
+#wsop .wsop-role {
+  margin: 0 0 12px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.wsop-summary > p {
+  margin: 0;
+}
+
+.wsop-product {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.wsop-product-art {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 10;
+  margin-bottom: 28px;
+}
+
+.wsop-product-art > img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  min-height: 0;
+}
+
+.wsop-plus-art {
+  overflow: hidden;
+}
+
+.wsop-plus-art > img {
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+  object-position: 62% center;
+}
+
+.wsop-plus-mark {
+  position: relative;
+  width: 62%;
+}
+
+.wsop-plus-mark > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+#wsop h3 {
+  margin: 0 0 14px;
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+}
+
+#wsop .wsop-link {
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 24px;
+  padding-bottom: 8px;
+  color: #513274;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.wsop-link > span[aria-hidden] {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+#wsop .wsop-link:hover {
+  color: #26163b;
+}
+
+.wsop-link:focus-visible {
+  outline: 2px solid #513274;
+  outline-offset: 6px;
+}
+
+.wsop-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 768px) {
+  .wsop-intro,
+  .wsop-products {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .wsop-products {
+    row-gap: 44px;
+  }
+
+  .wsop-product-art {
+    margin-bottom: 24px;
+  }
 }
 
 @media screen and (max-width: 768px) {
