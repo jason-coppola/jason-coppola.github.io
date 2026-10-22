@@ -8,31 +8,20 @@
 -->
 <html lang="en">
   <head>
+    <meta charset="UTF-8">
+    <!-- Keep this policy before all resources. Analytics allows its standard, non-Ads endpoints. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://www.googletagmanager.com; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com; style-src-attr 'none'; font-src https://fonts.gstatic.com; img-src 'self' https://img.youtube.com https://www.googletagmanager.com https://*.google-analytics.com; connect-src https://www.googletagmanager.com https://*.google-analytics.com https://*.google.com; base-uri 'none'; object-src 'none'; form-action 'none'">
+    <script src="site-init.js"></script>
     <!-- Google Analytics - Performance tracking -->
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YRN7DPL326"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-YRN7DPL326');
-    </script>
     <!-- Meta tags - SEO and viewport settings -->
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jason Coppola | Product Management Executive | Streaming Media Expert</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     
     <!-- DNS prefetch - Performance optimization for external resources -->
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-    <link rel="dns-prefetch" href="https://unpkg.com">
-    
-    <!-- Critical inline script - Prevents layout shift on page load -->
-    <script>
-      // Prevent layout shift by ensuring body is visible immediately
-      document.documentElement.style.visibility = 'visible';
-    </script>
     <!-- SEO Meta Tags - Description, keywords, and robots directives -->
     <meta name="description" content="Product Management Executive with 15+ years experience launching major streaming platforms including Disney+, Paramount+, HBO MAX, and HBO NOW. Expertise in streaming media, digital transformation, and global market expansion.">
     <meta name="keywords" content="Jason Coppola, Product Manager, Streaming Media, Disney+, Paramount+, HBO MAX, Digital Media Executive, Product Management, CW, WarnerMedia">
@@ -466,9 +455,6 @@
     }
     </script>
 
-    <!-- External scripts - Deferred for better performance -->
-    <!-- AOS (Animate On Scroll) library - loaded asynchronously -->
-    <script src="https://unpkg.com/aos@next/dist/aos.js" defer></script>
     <!-- Main JavaScript file - handles all interactive functionality -->
     <script src="script.js" defer></script>
 

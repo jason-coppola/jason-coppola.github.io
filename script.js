@@ -68,26 +68,6 @@ function waitForRender() {
 }
 
 /**
- * Initialize AOS (Animate On Scroll) library
- * Waits for the deferred library to load before initializing
- * @returns {void}
- */
-function initAOS() {
-  if (typeof AOS !== 'undefined') {
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true,
-      mirror: false,
-      disable: 'mobile' // Disable on mobile for better performance
-    });
-  } else {
-    // Retry if AOS hasn't loaded yet (for deferred scripts)
-    setTimeout(initAOS, 50);
-  }
-}
-
-/**
  * Track if page is fully loaded and ready for scroll calculations
  * This prevents scroll calculations before fonts and layout are stable
  */
@@ -140,9 +120,6 @@ function getScrollTargetY(targetElement) {
 document.addEventListener('DOMContentLoaded', () => {
     // Mark page as ready in the background
     markPageReady();
-    
-    // Initialize AOS when DOM is ready
-    initAOS();
     
     /**
      * Scroll Progress Indicator
@@ -629,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Mobile optimization enhancements
-     * Optimizes gallery image quality and simplifies animations on mobile devices
+     * Optimizes gallery image quality on mobile devices
      * @returns {void}
      */
     function handleMobileOptimization() {
@@ -641,11 +618,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (img.dataset.mobileSrc) {
                     img.src = img.dataset.mobileSrc;
                 }
-            });
-            
-            // Simplify animations on mobile for better performance
-            document.querySelectorAll('[data-aos]').forEach(el => {
-                el.setAttribute('data-aos-duration', '400');
             });
         }
     }
@@ -680,20 +652,6 @@ document.addEventListener('DOMContentLoaded', () => {
      * If these features are needed in the future, this code can be restored
      */
     
-    /**
-     * Search engine bot detection
-     * Ensures critical content is fully rendered for search engine crawlers
-     * Removes animation attributes that might prevent proper indexing
-     */
-    const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
-    if (isBot) {
-        // Ensure critical content is fully rendered for search engine crawlers
-        document.querySelectorAll('[data-aos]').forEach(el => {
-            el.removeAttribute('data-aos');
-            el.classList.add('fade-in');
-        });
-    }
-
     /**
      * StreamTV Image Gallery - Optimized Implementation
      * Handles image carousel with navigation buttons, keyboard controls, and touch/swipe support
