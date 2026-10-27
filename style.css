@@ -527,7 +527,8 @@ hr::after {
 
 /* Remove section separators between Background, Publications, and Speaking */
 #background + hr,
-#publications + hr {
+#publications + hr,
+#side-projects + hr {
   display: none;
 }
 
@@ -1178,6 +1179,7 @@ body {
 
 #background .col-6.end > h3:first-child,
 #publications .col-6.end > h3:first-child,
+#side-projects .col-6.end > h3:first-child,
 #speaker .col-6.end > h3:first-child {
   margin-top: 0;
 }
@@ -1195,7 +1197,8 @@ body {
   margin-bottom: 2em;
 }
 
-#publications h3 {
+#publications h3,
+#side-projects h3 {
   line-height: 1.25;
   font-weight: 500;
   color: #101010;
@@ -2016,7 +2019,7 @@ section {
   padding: var(--section-space) 0;
 }
 
-section:not(#intro):not(#background):not(#publications)::after {
+section:not(#intro):not(#background):not(#publications):not(#side-projects)::after {
   content: '';
   position: absolute;
   left: 20px;
@@ -2055,6 +2058,7 @@ section:not(#intro):not(#background):not(#publications)::after {
 .gray .col-6 p,
 #background p,
 #publications p,
+#side-projects p,
 #speaker p {
   color: #4a5260;
 }
@@ -2078,6 +2082,7 @@ section:not(#intro):not(#background):not(#publications)::after {
 
 #background .content-wrapper,
 #publications .content-wrapper,
+#side-projects .content-wrapper,
 #speaker .content-wrapper {
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(22, 34, 53, 0.08);
@@ -2121,9 +2126,54 @@ section[id] {
 /* Keep these long-form sections visually tighter as one grouped narrative */
 #background,
 #publications,
+#side-projects,
 #speaker {
   padding-top: clamp(26px, 2.6vw, 36px);
   padding-bottom: clamp(26px, 2.6vw, 36px);
+}
+
+/* Side projects use the same narrative grid as publications and talks. */
+#side-projects .side-project-art {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  margin-top: 28px;
+  border-radius: 12px;
+}
+
+#side-projects .side-project-role {
+  margin: -8px 0 20px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.side-project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-top: 24px;
+}
+
+.side-project-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: #2563eb;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.side-project-links a:hover {
+  color: #1d4ed8;
+}
+
+.side-project-links a:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 /* Tighten spacing between company sections in achievements flow */
@@ -2374,12 +2424,13 @@ section[id] {
 
   #background .content-wrapper,
   #publications .content-wrapper,
+  #side-projects .content-wrapper,
   #speaker .content-wrapper {
     border-radius: 16px;
     padding: 20px;
   }
 
-  section:not(#intro):not(#background):not(#publications)::after {
+  section:not(#intro):not(#background):not(#publications):not(#side-projects)::after {
     left: 20px;
     right: 20px;
   }
